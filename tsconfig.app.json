@@ -6,7 +6,24 @@
     "outDir": "./out-tsc/app",
     "types": [
       "node"
-    ]
+    ],
+    "paths": {
+      "@components/*": [
+        "src/app/common/components/*"
+      ],
+      "@services/*": [
+        "src/app/common/services/*"
+      ],
+      "@blog/*": [
+        "src/app/pages/blog/*"
+      ],
+      "@samples/*": [
+        "src/app/pages/samples/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ]
+    }
   },
   "include": [
     "src/**/*.ts"
