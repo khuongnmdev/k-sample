@@ -27,10 +27,22 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/content",
+                "output": "assets/content"
               }
             ],
             "styles": [
+              "node_modules/prismjs/themes/prism-okaidia.css",
               "src/styles.scss"
+            ],
+            "scripts": [
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-typescript.min.js",
+              "node_modules/prismjs/components/prism-css.min.js",
+              "node_modules/prismjs/components/prism-javascript.min.js"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",

@@ -3,6 +3,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "./out-tsc/app",
     "types": [
       "node"
@@ -11,14 +12,20 @@
       "@components/*": [
         "src/app/common/components/*"
       ],
+      "@mock-data/*": [
+        "src/app/common/mock-data/*"
+      ],
+      "@models/*": [
+        "src/app/common/models/*"
+      ],
       "@services/*": [
         "src/app/common/services/*"
       ],
-      "@blog/*": [
-        "src/app/pages/blog/*"
+      "@layout/*": [
+        "src/app/templates/layout/*"
       ],
-      "@samples/*": [
-        "src/app/pages/samples/*"
+      "@pages/*": [
+        "src/app/templates/pages/*"
       ],
       "@assets/*": [
         "src/assets/*"

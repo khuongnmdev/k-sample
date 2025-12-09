@@ -1,0 +1,39 @@
+@keyframes pulse {
+  0% {
+    background-color: rgba(165, 165, 165, 0.1);
+  }
+  50% {
+    background-color: rgba(165, 165, 165, 0.3);
+  }
+  100% {
+    background-color: rgba(165, 165, 165, 0.1);
+  }
+}
+
+.skeleton-container {
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-family: monospace;
+}
+
+.skeleton-header {
+  height: 20px;
+  width: 30%;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-line {
+  height: 14px;
+  width: 95%;
+  margin-bottom: 8px;
+  border-radius: 3px;
+  animation: pulse 1.5s infinite ease-in-out;
+
+  &.short {
+    width: 60%;
+  }
+}
