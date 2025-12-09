@@ -46,8 +46,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Thư mục chứa output tĩnh của browser build
-          path: dist/static-app
+          path: dist/static-app/browser
 
   deploy:
     environment:
