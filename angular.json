@@ -70,6 +70,14 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "github": {
+              "outputPath": "dist/static-app",
+              "prerender": false,
+              "ssr": false,
+              "outputHashing": "none",
+              "baseHref": "/k-sample/",
+              "outputMode": "static"
             }
           },
           "defaultConfiguration": "production"

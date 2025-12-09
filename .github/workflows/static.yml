@@ -30,13 +30,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build Angular Application (Production - Github Page)
-        run: npm run build -- --output-path=dist/static-app --base-href=/k-sample/ --output-hashing=none
+        run: npm run build --configuration github
         env:
           BASE_HREF: /k-sample/
 
