@@ -71,7 +71,7 @@
               "extractLicenses": false,
               "sourceMap": true
             },
-            "github": {
+            "static": {
               "outputPath": "dist/static-app",
               "prerender": false,
               "ssr": false,
