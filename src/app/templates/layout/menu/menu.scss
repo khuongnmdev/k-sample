@@ -1,3 +1,8 @@
+:host {
+  --bar-width: 3px;
+  --bar-color: var(--bg-idicator-color);
+}
+
 .menu-container {
   height: 100%;
   border-right: 1px solid var(--border-color);
@@ -15,21 +20,31 @@
         text-decoration: none;
         display: block;
         padding: 0.5rem 1rem;
-        opacity: 0.8;
-        color: white;
+        opacity: 0.7;
+        color: var(--text-color);
+        background: transparent;
 
         &:before {
           content: "";
           position: absolute;
           right: 0;
-          top: 0;
-          width: 2px;
-          height: 1rem;
-          background: red;
+          top: 50%;
+          width: var(--bar-width);
+          height: 100%;
+          opacity: 0;
+          transform: translateY(-50%) scaleY(0);
+          transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
         &.activated {
           opacity: 1;
+          font-weight: bold;
+          background: var(--bg-activated-item-color);
+
+          &:before {
+            opacity: 1;
+            transform: translateY(-50%) scaleY(1);
+          }
         }
       }
     }

@@ -5,8 +5,7 @@ import {map, Observable, of, switchMap} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';
 import {toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {LoadingSkeleton} from '@components/loading-skeleton/loading-skeleton';
-
-export const DEFAULT_LANGUAGE = 'typescript';
+import {CommonService, DEFAULT_LANGUAGE} from '@services/common.service';
 
 @Component({
   selector: 'app-code-presenter',
@@ -18,6 +17,7 @@ export const DEFAULT_LANGUAGE = 'typescript';
 export class CodePresenter {
   private readonly http = inject(HttpClient);
   private readonly injector = inject(Injector); // Use toSignal
+  private readonly commonService = inject(CommonService);
   public readonly currentFileName = signal<string>('');
 
   @Input({required: true})
@@ -46,40 +46,22 @@ export class CodePresenter {
       })
     );
 
+  public readonly codeMarkdown: Signal<string | undefined> = toSignal(
+    this.codeMarkdown$,
+    {
+      injector: this.injector, // Need injector provide lifecycle context, make sure unsubscribe when component destroyed
+      initialValue: 'Loading code...'
+    }
+  );
+
   // Use computed to set up language and filePath data when the currentFileName signal changes (emit new data)
   private readonly fileInfo = computed(() => {
     const fileName = this.currentFileName();
     if (!fileName) {
       return {filePath: '', language: DEFAULT_LANGUAGE};
     }
-    const language = this.getLanguageFromFile(fileName);
+    const language = this.commonService.getLanguageFromFile(fileName);
     const filePath = `assets/content/code-samples/${fileName}`;
     return {filePath, language};
   });
-
-  public readonly codeMarkdown: Signal<string | undefined> = toSignal(
-    this.codeMarkdown$,
-    {
-      injector: this.injector,
-      initialValue: 'Loading code...'
-    }
-  );
-
-  // Get language from file name: abc.typescript.md => typescript
-  private getLanguageFromFile(fileName: string): string {
-    const lastDotIndex = fileName.lastIndexOf('.');
-
-    if (lastDotIndex <= 0 || lastDotIndex === fileName.length - 1) {
-      return DEFAULT_LANGUAGE;
-    }
-
-    const baseName = fileName.substring(0, lastDotIndex); // abc.typescript.md => abc.typescript
-    const secondLastDotIndex = baseName.lastIndexOf('.');
-
-    if (secondLastDotIndex > 0) {
-      return baseName.substring(secondLastDotIndex + 1);
-    } else {
-      return DEFAULT_LANGUAGE;
-    }
-  }
 }

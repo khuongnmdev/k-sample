@@ -1,0 +1,12 @@
+<div class="code-presenter-wrapper">
+  <!--   support Angular v17 syntax-->
+  @if (codeMarkdown$ | async; as codeMarkdown) {
+    <markdown [data]="codeMarkdown"
+              class="code-block"
+              [katex]="false"
+              [mermaid]="false">
+    </markdown>
+  } @else {
+    <app-loading-skeleton></app-loading-skeleton>
+  }
+</div>

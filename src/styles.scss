@@ -1,15 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
-:root {
-  --primary-color: #007bff;
+html {
   --border-color: #413e46;
+  --bg-idicator-color: red;
+  --text-color: black;
+  --bg-color: white;
+  --bg-activated-item-color: rgba(0, 0, 0, 0.1);
+
+  --primary-color: #007bff;
+
+  &.dark-theme {
+    --text-color: white;
+    --bg-color: #0f0f11;
+    --bg-activated-item-color: rgba(255, 255, 255, 0.1);
+
+    --primary-color: #007bff;
+  }
 }
 
 body {
   margin: 0;
-  background-color: #0f0f11;
-  color: white;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-family: "Open Sans", sans-serif;
 }
 
