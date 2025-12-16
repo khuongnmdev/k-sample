@@ -7,6 +7,10 @@
   height: 100%;
   border-right: 1px solid var(--border-color);
 
+  .switch-container {
+    padding: 0.5rem 1rem;
+  }
+
   .menu-list {
     display: flex;
     flex-direction: column;
