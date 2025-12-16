@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, DestroyRef, DoCheck, inject, Input} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {ChangeDetectionStrategy, Component, DestroyRef, DoCheck, inject, Input, PLATFORM_ID} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, map, Observable, of, switchMap} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';
@@ -19,6 +19,9 @@ export class CodePresenterObservable implements DoCheck {
   private readonly http = inject(HttpClient);
   private readonly destroyRef = inject(DestroyRef);
   private readonly commonService = inject(CommonService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+
   private readonly currentFileName$ = new BehaviorSubject<string>('');
 
   protected renderCount = 0;
@@ -44,12 +47,16 @@ export class CodePresenterObservable implements DoCheck {
     this.codeMarkdown$ = this.currentFileName$
       .pipe(
         switchMap((fileName: string) => {
+          // SSR/Prerender: don't fetch assets via HttpClient
+          if (!this.isBrowser) {
+            return of('');
+          }
+
           if (!fileName) {
             return of('Loading code...');
           }
 
           const info = this.getFileInfo(fileName);
-
           if (!info.filePath) {
             return of('');
           }
@@ -57,7 +64,10 @@ export class CodePresenterObservable implements DoCheck {
           return this.http.get(info.filePath, {responseType: 'text'})
             .pipe(
               map(codeContent => {
-                return `\`\`\`${info.language}\n${codeContent}\n\`\`\``;
+                const isMarkdown = fileName.toLowerCase().endsWith('.md');
+                return isMarkdown
+                  ? codeContent
+                  : `\`\`\`${info.language}\n${codeContent}\n\`\`\``;
               })
             );
         }),
@@ -67,7 +77,9 @@ export class CodePresenterObservable implements DoCheck {
 
   private getFileInfo(fileName: string) {
     const language = this.commonService.getLanguageFromFile(fileName);
-    const filePath = `assets/content/code-samples/${fileName}`;
+    const filePath = language === 'md'
+      ? `assets/content/markdown/${fileName}`
+      : `assets/content/code-samples/${fileName}`;
     return {filePath, language};
   }
 }

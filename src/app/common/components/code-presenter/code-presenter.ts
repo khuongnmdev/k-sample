@@ -6,10 +6,11 @@ import {
   inject,
   Injector,
   Input,
+  PLATFORM_ID,
   Signal,
   signal
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable, of, switchMap} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';
@@ -27,8 +28,11 @@ import {CommonService, DEFAULT_LANGUAGE} from '@services/common.service';
 })
 export class CodePresenter implements DoCheck {
   private readonly http = inject(HttpClient);
-  private readonly injector = inject(Injector); // Use toSignal
+  private readonly injector = inject(Injector);
   private readonly commonService = inject(CommonService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+
   public readonly currentFileName = signal<string>('');
   protected renderCount = 0;
 
@@ -51,6 +55,11 @@ export class CodePresenter implements DoCheck {
   private readonly codeMarkdown$: Observable<string> = toObservable(this.currentFileName)
     .pipe(
       switchMap(() => {
+        // SSR/Prerender: don't fetch assets via HttpClient
+        if (!this.isBrowser) {
+          return of(''); // or: of('Content loads on client...')
+        }
+
         const info = this.fileInfo();
 
         if (!info.filePath) {
@@ -84,7 +93,9 @@ export class CodePresenter implements DoCheck {
       return {filePath: '', language: DEFAULT_LANGUAGE};
     }
     const language = this.commonService.getLanguageFromFile(fileName);
-    const filePath = language === 'md' ? `assets/content/markdown/${fileName}` : `assets/content/code-samples/${fileName}`;
+    const filePath = language === 'md'
+      ? `assets/content/markdown/${fileName}`
+      : `assets/content/code-samples/${fileName}`;
     return {filePath, language};
   });
 }
