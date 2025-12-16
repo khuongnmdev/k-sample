@@ -5,5 +5,7 @@ export interface MenuItem {
 
 export const MenuItemEnum = {
   Home: 'Home',
-  About: 'About'
+  About: 'About',
+  DemoChangeDetection: 'Demo Change Detection',
+  ExplainChangeDetection: 'Explain Change Detection'
 };

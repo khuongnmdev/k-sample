@@ -1,10 +1,9 @@
 import {ChangeDetectionStrategy, Component, DestroyRef, DoCheck, inject, Input, PLATFORM_ID} from '@angular/core';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject, map, Observable, of, switchMap} from 'rxjs';
+import {BehaviorSubject, EMPTY, map, Observable, of, switchMap} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';
 import {LoadingSkeleton} from '@components/loading-skeleton/loading-skeleton';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonService} from '@services/common.service';
 
 @Component({
@@ -26,7 +25,7 @@ export class CodePresenterObservable implements DoCheck {
 
   protected renderCount = 0;
 
-  @Input() isCheckCD = false;
+  @Input() showRenderCount = false;
 
   @Input({required: true})
   set fileName(value: string) {
@@ -38,7 +37,7 @@ export class CodePresenterObservable implements DoCheck {
   public readonly codeMarkdown$: Observable<string>;
 
   ngDoCheck(): void {
-    if (this.isCheckCD) {
+    if (this.showRenderCount) {
       this.renderCount++;
     }
   }
@@ -49,15 +48,11 @@ export class CodePresenterObservable implements DoCheck {
         switchMap((fileName: string) => {
           // SSR/Prerender: don't fetch assets via HttpClient
           if (!this.isBrowser) {
-            return of('');
-          }
-
-          if (!fileName) {
-            return of('Loading code...');
+            return EMPTY;
           }
 
           const info = this.getFileInfo(fileName);
-          if (!info.filePath) {
+          if (!fileName || !info.filePath) {
             return of('');
           }
 
@@ -71,7 +66,6 @@ export class CodePresenterObservable implements DoCheck {
               })
             );
         }),
-        takeUntilDestroyed(this.destroyRef)
       )
   }
 

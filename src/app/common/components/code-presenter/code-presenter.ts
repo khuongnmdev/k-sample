@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
-import {map, Observable, of, switchMap} from 'rxjs';
+import {EMPTY, map, Observable, of, switchMap} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';
 import {toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {LoadingSkeleton} from '@components/loading-skeleton/loading-skeleton';
@@ -43,10 +43,10 @@ export class CodePresenter implements DoCheck {
     }
   }
 
-  @Input() isCheckCD = false;
+  @Input() showRenderCount = false;
 
   ngDoCheck(): void {
-    if (this.isCheckCD) {
+    if (this.showRenderCount) {
       this.renderCount++;
     }
   }
@@ -57,7 +57,7 @@ export class CodePresenter implements DoCheck {
       switchMap(() => {
         // SSR/Prerender: don't fetch assets via HttpClient
         if (!this.isBrowser) {
-          return of(''); // or: of('Content loads on client...')
+          return EMPTY;
         }
 
         const info = this.fileInfo();

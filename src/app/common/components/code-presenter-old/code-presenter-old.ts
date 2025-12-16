@@ -1,5 +1,14 @@
 import {CommonModule, isPlatformBrowser} from '@angular/common';
-import {ChangeDetectionStrategy, Component, DestroyRef, DoCheck, inject, Input, PLATFORM_ID} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  DoCheck,
+  inject,
+  Input,
+  PLATFORM_ID
+} from '@angular/core';
 import {MarkdownModule} from 'ngx-markdown';
 import {HttpClient} from '@angular/common/http';
 import {CommonService} from '@services/common.service';
@@ -19,6 +28,7 @@ export class CodePresenterOld implements DoCheck {
   private readonly commonService = inject(CommonService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   private currentFileName = '';
   protected codeMarkdown = '';
@@ -32,10 +42,10 @@ export class CodePresenterOld implements DoCheck {
     }
   }
 
-  @Input() isCheckCD = false;
+  @Input() showRenderCount = false;
 
   ngDoCheck(): void {
-    if (this.isCheckCD) {
+    if (this.showRenderCount) {
       this.renderCount++;
     }
   }
@@ -58,7 +68,9 @@ export class CodePresenterOld implements DoCheck {
     }
 
     this.http.get(info.filePath, {responseType: 'text'})
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe(codeContent => {
         if (!codeContent) {
           this.codeMarkdown = '';
@@ -69,6 +81,7 @@ export class CodePresenterOld implements DoCheck {
         this.codeMarkdown = isMarkdown
           ? codeContent
           : `\`\`\`${info.language}\n${codeContent}\n\`\`\``;
+        // this.cdr.markForCheck();
       });
   }
 

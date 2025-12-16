@@ -4,20 +4,20 @@ import {CodePresenterObservable} from '@components/code-presenter-observable/cod
 import {CodePresenterOld} from '@components/code-presenter-old/code-presenter-old';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-demo-change-detection',
   imports: [
-    CodePresenterOld,
+    CodePresenter,
     CodePresenterObservable,
-    CodePresenter
+    CodePresenterOld
   ],
-  templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.scss',
+  templateUrl: './demo-change-detection.html',
+  styleUrl: './demo-change-detection.scss',
 })
-export class HomePage {
+export class DemoChangeDetection {
   currentFile = signal('demo.ts');
   randomValue = signal(0);
-  summary = signal(false);
   onPush = signal(false);
+  summary = signal(false);
 
   protected triggerRandomChange() {
     this.randomValue.set(Math.random());

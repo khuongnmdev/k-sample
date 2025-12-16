@@ -1,5 +1,5 @@
 <div class="code-presenter-wrapper">
-  @if (isCheckCD) {
+  @if (showRenderCount) {
     <p class="render-counter">Render Count: {{ renderCount }}</p>
   }
   <!--   support Angular v17 syntax-->
@@ -11,5 +11,6 @@
     </markdown>
   } @else {
     <app-loading-skeleton></app-loading-skeleton>
+
   }
 </div>

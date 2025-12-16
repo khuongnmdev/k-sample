@@ -6,6 +6,10 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/home'
   },
   {
+    name: MenuItemEnum.DemoChangeDetection,
+    link: '/demo-change-detection'
+  },
+  {
     name: MenuItemEnum.About,
     link: '/about'
   }
