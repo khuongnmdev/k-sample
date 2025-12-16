@@ -1,9 +1,9 @@
 <div class="code-presenter-wrapper">
   @if (isCheckCD) {
-    <p class="render-counter">Render Count (OnPush): {{ renderCount }}</p>
+    <p class="render-counter">Render Count: {{ renderCount }}</p>
   }
   <!--   support Angular v17 syntax-->
-  @if (codeMarkdown$ | async; as codeMarkdown) {
+  @if (codeMarkdown) {
     <markdown [data]="codeMarkdown"
               class="code-block"
               [katex]="false"

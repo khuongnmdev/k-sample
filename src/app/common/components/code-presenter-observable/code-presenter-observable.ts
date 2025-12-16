@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, DestroyRef, DoCheck, inject, Input} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, map, Observable, of, switchMap} from 'rxjs';
@@ -13,12 +13,17 @@ import {CommonService} from '@services/common.service';
   standalone: true,
   templateUrl: './code-presenter-observable.html',
   styleUrl: './code-presenter-observable.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CodePresenterObservable {
+export class CodePresenterObservable implements DoCheck {
   private readonly http = inject(HttpClient);
   private readonly destroyRef = inject(DestroyRef);
   private readonly commonService = inject(CommonService);
   private readonly currentFileName$ = new BehaviorSubject<string>('');
+
+  protected renderCount = 0;
+
+  @Input() isCheckCD = false;
 
   @Input({required: true})
   set fileName(value: string) {
@@ -29,6 +34,12 @@ export class CodePresenterObservable {
 
   public readonly codeMarkdown$: Observable<string>;
 
+  ngDoCheck(): void {
+    if (this.isCheckCD) {
+      this.renderCount++;
+    }
+  }
+
   constructor() {
     this.codeMarkdown$ = this.currentFileName$
       .pipe(
@@ -37,17 +48,18 @@ export class CodePresenterObservable {
             return of('Loading code...');
           }
 
-          const info = this.getFileInfo(fileName); // Gọi hàm tính toán thông tin file
+          const info = this.getFileInfo(fileName);
 
           if (!info.filePath) {
             return of('');
           }
 
-          return this.http.get(info.filePath, {responseType: 'text'}).pipe(
-            map(codeContent => {
-              return `\`\`\`${info.language}\n${codeContent}\n\`\`\``;
-            })
-          );
+          return this.http.get(info.filePath, {responseType: 'text'})
+            .pipe(
+              map(codeContent => {
+                return `\`\`\`${info.language}\n${codeContent}\n\`\`\``;
+              })
+            );
         }),
         takeUntilDestroyed(this.destroyRef)
       )

@@ -1,4 +1,7 @@
 <div class="code-presenter-wrapper">
+  @if (isCheckCD) {
+    <p class="render-counter">Render Count (OnPush): {{ renderCount }}</p>
+  }
   @if (codeMarkdown()) {
     <markdown [data]="codeMarkdown()"
               class="code-block"

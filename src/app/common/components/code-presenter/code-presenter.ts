@@ -1,4 +1,14 @@
-import {Component, computed, inject, Injector, Input, Signal, signal} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DoCheck,
+  inject,
+  Injector,
+  Input,
+  Signal,
+  signal
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable, of, switchMap} from 'rxjs';
@@ -13,12 +23,14 @@ import {CommonService, DEFAULT_LANGUAGE} from '@services/common.service';
   standalone: true,
   templateUrl: './code-presenter.html',
   styleUrl: './code-presenter.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CodePresenter {
+export class CodePresenter implements DoCheck {
   private readonly http = inject(HttpClient);
   private readonly injector = inject(Injector); // Use toSignal
   private readonly commonService = inject(CommonService);
   public readonly currentFileName = signal<string>('');
+  protected renderCount = 0;
 
   @Input({required: true})
   set fileName(value: string) {
@@ -27,10 +39,18 @@ export class CodePresenter {
     }
   }
 
+  @Input() isCheckCD = false;
+
+  ngDoCheck(): void {
+    if (this.isCheckCD) {
+      this.renderCount++;
+    }
+  }
+
   // Declare Observable to handle async data fetching file content
   private readonly codeMarkdown$: Observable<string> = toObservable(this.currentFileName)
     .pipe(
-      switchMap(() => {  // Use switchMap to ensure that the previous file content is cleared before fetching the new one
+      switchMap(() => {
         const info = this.fileInfo();
 
         if (!info.filePath) {
@@ -40,7 +60,10 @@ export class CodePresenter {
         return this.http.get(info.filePath, {responseType: 'text'})
           .pipe(
             map(codeContent => {
-              return `\`\`\`${info.language}\n${codeContent}\n\`\`\``;
+              const isMarkdown = this.currentFileName().toLowerCase().endsWith('.md');
+              return isMarkdown
+                ? codeContent
+                : `\`\`\`${info.language}\n${codeContent}\n\`\`\``;
             })
           );
       })
@@ -49,7 +72,7 @@ export class CodePresenter {
   public readonly codeMarkdown: Signal<string | undefined> = toSignal(
     this.codeMarkdown$,
     {
-      injector: this.injector, // Need injector provide lifecycle context, make sure unsubscribe when component destroyed
+      injector: this.injector,
       initialValue: 'Loading code...'
     }
   );
@@ -61,7 +84,7 @@ export class CodePresenter {
       return {filePath: '', language: DEFAULT_LANGUAGE};
     }
     const language = this.commonService.getLanguageFromFile(fileName);
-    const filePath = `assets/content/code-samples/${fileName}`;
+    const filePath = language === 'md' ? `assets/content/markdown/${fileName}` : `assets/content/code-samples/${fileName}`;
     return {filePath, language};
   });
 }
