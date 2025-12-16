@@ -4,17 +4,16 @@
 html {
   --border-color: #413e46;
   --bg-idicator-color: red;
+  --btn-text-color: white;
   --text-color: black;
   --bg-color: white;
   --bg-activated-item-color: rgba(0, 0, 0, 0.1);
-
   --primary-color: #007bff;
 
   &.dark-theme {
     --text-color: white;
     --bg-color: #0f0f11;
     --bg-activated-item-color: rgba(255, 255, 255, 0.1);
-
     --primary-color: #007bff;
   }
 }
@@ -26,3 +25,35 @@ body {
   font-family: "Open Sans", sans-serif;
 }
 
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--btn-text-color);
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  border: 1px solid var(--primary-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  background-color: var(--primary-color);
+  opacity: 0.9;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 1;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    border-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+  }
+}
