@@ -1,2 +1,13 @@
 <h3>RxJS Catch Error Operator Example (catch-error-operator.ts)</h3>
-<app-code-presenter [fileName]="'catch-error-operator.ts'"></app-code-presenter>
+<button class="btn" (click)="triggerRandomChange()">Trigger Change Detection (Random)</button>
+<p>Parent Change Trigger: {{ randomValue() }}</p>
+<hr>
+<app-code-presenter-old [fileName]="currentFile()" [isCheckCD]="true"></app-code-presenter-old>
+<app-code-presenter-observable [fileName]="currentFile()" [isCheckCD]="true"></app-code-presenter-observable>
+<app-code-presenter [fileName]="currentFile()" [isCheckCD]="true"></app-code-presenter>
+
+@if (this.explain()) {
+  <app-code-presenter [fileName]="'explain-change-detection.md'"></app-code-presenter>
+} @else {
+  <button class="btn" (click)="triggerExplain()">Explain</button>
+}

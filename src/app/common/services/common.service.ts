@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+
 export const DEFAULT_LANGUAGE = 'typescript';
 
 @Injectable({
@@ -20,7 +21,7 @@ export class CommonService {
     if (secondLastDotIndex > 0) {
       return baseName.substring(secondLastDotIndex + 1);
     } else {
-      return DEFAULT_LANGUAGE;
+      return fileName.substring(lastDotIndex + 1, fileName.length);
     }
   }
 }
