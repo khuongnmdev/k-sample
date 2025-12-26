@@ -40,4 +40,5 @@ Sử dụng Angular Signals, mô hình khuyến nghị cho Angular hiện đại
 
 ## Tóm tắt và Lựa chọn
 
-Mô hình **Signal State** là lựa chọn tối ưu nhất cho Angular hiện đại (từ v16 trở lên) về hiệu suất và khả năng duy trì. Tuy nhiên, nếu mục tiêu chính là **demo sự khác biệt giữa OnPush và Default**, thì mô hình **Imperative (Old)** dễ gây ra lỗi CD và dễ can thiệp CD thủ công, từ đó giúp người học thấy rõ tác dụng của việc kích hoạt CD như thế nào trong các tình huống khó.
+Mô hình **Signal State** là lựa chọn tối ưu nhất cho Angular hiện đại (từ v16 trở lên) về hiệu suất và khả năng duy trì.  
+Mô hình **Imperative (Old)** dễ gây ra lỗi CD và dễ can thiệp CD thủ công, 

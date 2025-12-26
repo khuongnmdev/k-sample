@@ -5,7 +5,7 @@
 <h4>Old</h4>
 <app-code-presenter-old [fileName]="currentFile()" [showRenderCount]="true"></app-code-presenter-old>
 
-@if (this.onPush()) {
+@if (this.showExplainOnPush()) {
   <app-code-presenter [fileName]="'explain-on-push.md'"></app-code-presenter>
 } @else {
   <button class="btn" (click)="triggerExplainOnPush()">Why not work bro ?</button>
@@ -18,7 +18,7 @@
 <h4>Signal</h4>
 <app-code-presenter [fileName]="currentFile()" [showRenderCount]="true"></app-code-presenter>
 <hr>
-@if (this.summary()) {
+@if (this.showSummary()) {
   <app-code-presenter [fileName]="'explain-change-detection.md'"></app-code-presenter>
 } @else {
   <button class="btn" (click)="triggerSummary()">Summary</button>

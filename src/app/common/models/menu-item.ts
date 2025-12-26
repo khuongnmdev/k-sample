@@ -7,5 +7,6 @@ export const MenuItemEnum = {
   Home: 'Home',
   About: 'About',
   DemoChangeDetection: 'Demo Change Detection',
-  ExplainChangeDetection: 'Explain Change Detection'
+  DemoSwitchMap: 'Demo Switch Map',
+  DemoMulticast: 'Demo Multicast',
 };

@@ -10,6 +10,14 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/demo-change-detection'
   },
   {
+    name: MenuItemEnum.DemoSwitchMap,
+    link: '/demo-switch-map'
+  },
+  {
+    name: MenuItemEnum.DemoMulticast,
+    link: '/demo-multicast'
+  },
+  {
     name: MenuItemEnum.About,
     link: '/about'
   }

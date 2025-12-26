@@ -16,18 +16,18 @@ import {CodePresenterOld} from '@components/code-presenter-old/code-presenter-ol
 export class DemoChangeDetection {
   currentFile = signal('demo.ts');
   randomValue = signal(0);
-  onPush = signal(false);
-  summary = signal(false);
+  showExplainOnPush = signal(false);
+  showSummary = signal(false);
 
   protected triggerRandomChange() {
     this.randomValue.set(Math.random());
   }
 
   protected triggerExplainOnPush() {
-    this.onPush.set(true);
+    this.showExplainOnPush.set(true);
   }
 
   protected triggerSummary() {
-    this.summary.set(true);
+    this.showSummary.set(true);
   }
 }
