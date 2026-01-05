@@ -11,13 +11,13 @@ Sử dụng chiến lược `ChangeDetectionStrategy.OnPush` giúp Angular tối
 
 * Một sự kiện DOM (như `click`, `submit`, `keydown`) được kích hoạt **từ bên trong** template của chính component đó (hoặc component con đang sử dụng `Default` CD).
 
-3. **Sử dụng `AsyncPipe`**
-
-* Một `Observable` được liên kết với template thông qua **`AsyncPipe`** phát ra một giá trị mới.
-* `AsyncPipe` tự động gọi `markForCheck()` mỗi khi nó nhận dữ liệu mới.
-
-4. **Kích hoạt Thủ công**
+3. **Kích hoạt Thủ công**
 
 * Sử dụng `ChangeDetectorRef` để gọi một trong hai phương thức:
   * `this.cd.detectChanges()`: Buộc kiểm tra thay đổi ngay lập tức (và kiểm tra các component con).
   * `this.cd.markForCheck()`: Đánh dấu component là "cần kiểm tra" trong lần kiểm tra CD toàn bộ tiếp theo (được khuyến nghị hơn).
+
+4. **Sử dụng `AsyncPipe`**
+
+* Một `Observable` được liên kết với template thông qua **`AsyncPipe`** phát ra một giá trị mới.
+* `AsyncPipe` tự động gọi `markForCheck()` mỗi khi nó nhận dữ liệu mới.

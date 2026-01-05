@@ -8,5 +8,8 @@ export const MenuItemEnum = {
   About: 'About',
   DemoChangeDetection: 'Demo Change Detection',
   DemoSwitchMap: 'Demo Switch Map',
+  DemoPolling: 'Demo Polling',
+  DemoPollingByList: 'Demo Polling By List',
   DemoMulticast: 'Demo Multicast',
+
 };

@@ -1,33 +1,11 @@
-import {Component, signal} from '@angular/core';
-import {CodePresenter} from '@components/code-presenter/code-presenter';
-import {CodePresenterObservable} from '@components/code-presenter-observable/code-presenter-observable';
-import {CodePresenterOld} from '@components/code-presenter-old/code-presenter-old';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-home',
-  imports: [
-    CodePresenterOld,
-    CodePresenterObservable,
-    CodePresenter
-  ],
+  imports: [],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss',
 })
 export class HomePage {
-  currentFile = signal('demo.ts');
-  randomValue = signal(0);
-  summary = signal(false);
-  onPush = signal(false);
 
-  protected triggerRandomChange() {
-    this.randomValue.set(Math.random());
-  }
-
-  protected triggerExplainOnPush() {
-    this.onPush.set(true);
-  }
-
-  protected triggerSummary() {
-    this.summary.set(true);
-  }
 }

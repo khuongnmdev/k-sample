@@ -1,0 +1,19 @@
+<h3>Demo Polling with Signal + Switch Map</h3>
+<button class="btn" (click)="toggleState()">
+  @if (isLoggedIn()) {
+    Log Out
+  } @else {
+    Log In
+  }
+</button>
+<hr>
+<p>
+  Current State:
+  @if (isLoggedIn()) {
+    User Logged In
+  } @else {
+    No User
+  }
+</p>
+<hr>
+<p>Counter: {{ counter() }}</p>
