@@ -8,10 +8,11 @@ import {CodePresenterOld} from '@components/code-presenter-old/code-presenter-ol
   imports: [
     CodePresenter,
     CodePresenterObservable,
-    CodePresenterOld
+    CodePresenterOld,
   ],
   templateUrl: './demo-change-detection.html',
   styleUrl: './demo-change-detection.scss',
+  standalone: true
 })
 export class DemoChangeDetection {
   currentFile = signal('demo.ts');
@@ -24,10 +25,10 @@ export class DemoChangeDetection {
   }
 
   protected triggerExplainOnPush() {
-    this.showExplainOnPush.set(true);
+    this.showExplainOnPush.update(v => !v);
   }
 
   protected triggerSummary() {
-    this.showSummary.set(true);
+    this.showSummary.update(v => !v);
   }
 }

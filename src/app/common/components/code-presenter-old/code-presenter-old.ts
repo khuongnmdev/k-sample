@@ -20,6 +20,7 @@ import {LoadingSkeleton} from '@components/loading-skeleton/loading-skeleton';
   imports: [CommonModule, MarkdownModule, LoadingSkeleton],
   templateUrl: './code-presenter-old.html',
   styleUrl: './code-presenter-old.scss',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class CodePresenterOld implements DoCheck {

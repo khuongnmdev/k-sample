@@ -12,6 +12,7 @@ const INTERVAL_TIME = 1000;
   ],
   templateUrl: './demo-polling-by-list.html',
   styleUrl: './demo-polling-by-list.scss',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DemoPollingByList {

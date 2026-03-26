@@ -2,22 +2,20 @@
   <div class="switch-container">
     <label class="switch">
       <input class="switch-input" type="checkbox"
-             [ngModel]=commonService.isDarkMode() (ngModelChange)="commonService.toggleDarkmode()" />
+             [ngModel]=commonService.isDarkMode() (ngModelChange)="commonService.toggleDarkmode()"/>
       <span class="switch-track" aria-hidden="true"></span>
       <span class="switch-label">Dark mode</span>
     </label>
   </div>
   @if (menuList()) {
     <ul class="menu-list">
-    @for (menu of menuList(); track $index) {
-      <li class="menu-item">
-        <a class="menu-link"
-           [routerLink]="menu.link"
-           routerLinkActive="activated">
-          {{ menu.name }}
-        </a>
-      </li>
-    }
+      @for (menu of menuList(); track $index) {
+        <li class="menu-item">
+          <a class="menu-link" [routerLink]="menu.link" routerLinkActive="activated">
+            {{ menu.name }}
+          </a>
+        </li>
+      }
     </ul>
   }
 </div>

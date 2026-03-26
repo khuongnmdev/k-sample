@@ -19,7 +19,7 @@ import {LoadingSkeleton} from '@components/loading-skeleton/loading-skeleton';
 import {CommonService, DEFAULT_LANGUAGE} from '@services/common.service';
 
 @Component({
-  selector: 'app-code-presenter',
+  selector: 'app-code-presenter-signal',
   imports: [CommonModule, MarkdownModule, LoadingSkeleton],
   standalone: true,
   templateUrl: './code-presenter.html',

@@ -4,10 +4,7 @@
   }
   <!--   support Angular v17 syntax-->
   @if (codeMarkdown) {
-    <markdown [data]="codeMarkdown"
-              class="code-block"
-              [katex]="false"
-              [mermaid]="false">
+    <markdown [data]="codeMarkdown" class="code-block" [katex]="false" [mermaid]="false">
     </markdown>
   } @else {
     <app-loading-skeleton></app-loading-skeleton>

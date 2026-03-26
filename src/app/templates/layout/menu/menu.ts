@@ -11,9 +11,9 @@ import {CommonService} from '@services/common.service';
   imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule],
   templateUrl: './menu.html',
   styleUrl: './menu.scss',
+  standalone: true
 })
 export class Menu {
   protected readonly commonService = inject(CommonService);
-  menuList = signal<MenuItem[]>(DEFAULT_MENU_LIST);
-
+  protected readonly menuList = signal<MenuItem[]>(DEFAULT_MENU_LIST);
 }
