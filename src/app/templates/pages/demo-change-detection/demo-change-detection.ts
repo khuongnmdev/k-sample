@@ -15,10 +15,10 @@ import {CodePresenterOld} from '@components/code-presenter-old/code-presenter-ol
   standalone: true
 })
 export class DemoChangeDetection {
-  currentFile = signal('demo.ts');
-  randomValue = signal(0);
-  showExplainOnPush = signal(false);
-  showSummary = signal(false);
+  protected readonly currentFile = signal('demo.ts');
+  protected readonly randomValue = signal(0);
+  protected readonly showExplainOnPush = signal(false);
+  protected readonly showSummary = signal(false);
 
   protected triggerRandomChange() {
     this.randomValue.set(Math.random());

@@ -9,6 +9,7 @@ const INTERVAL_TIME = 1000;
   imports: [],
   templateUrl: './demo-polling.html',
   styleUrl: './demo-polling.scss',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DemoPolling {
@@ -20,16 +21,18 @@ export class DemoPolling {
   private readonly _counter = signal<number>(0);
   public readonly counter = this._counter.asReadonly();
 
-  private readonly pollingSubscription = this._shouldPolling$.pipe(
-    switchMap((shouldPolling) => {
-      if (!shouldPolling) return EMPTY;
-      return interval(INTERVAL_TIME);
-    }),
-    takeUntilDestroyed(this.destroyRef)
-  ).subscribe(() => {
-    this._counter.update(v => v + 1);
-    console.log('Counter hiện tại:', this._counter());
-  });
+  private readonly pollingSubscription = this._shouldPolling$
+    .pipe(
+      switchMap((shouldPolling) => {
+        if (!shouldPolling) return EMPTY;
+        return interval(INTERVAL_TIME);
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    )
+    .subscribe(() => {
+      this._counter.update(v => v + 1);
+      console.log('Counter hiện tại:', this._counter());
+    });
 
   toggleState() {
     this.isLoggedIn.update(value => !value);

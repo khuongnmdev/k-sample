@@ -23,10 +23,10 @@ export class CommonService {
     }
 
     effect(() => {
-      const isDarkMode = this.isDarkMode();
-
       // SSR-safe: only touch DOM + storage in browser
       if (!this.isBrowser) return;
+
+      const isDarkMode = this.isDarkMode();
 
       const html = this.document.documentElement;
       html.classList.toggle('dark-theme', isDarkMode);
@@ -77,8 +77,8 @@ export class CommonService {
 
     try {
       localStorage.setItem(STORAGE_KEY, String(isDark));
-    } catch {
-      // ignore (blocked storage, private mode, etc.)
+    } catch (e) {
+      console.error(e);
     }
   }
 }

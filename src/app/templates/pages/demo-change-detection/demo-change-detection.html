@@ -1,17 +1,19 @@
-<h3>Explain How Change Detection Work</h3>
+<h3>Explain Change Detection Difference</h3>
 <button class="btn" (click)="triggerRandomChange()">Trigger Change Detection (Random)</button>
-<p>Parent Change Trigger: {{ randomValue() }}</p>
+<p>
+  Parent Change Trigger: <span class="highlight">{{ randomValue() }}</span>
+</p>
 
 <hr>
-<h4>Imperative State</h4>
+<h4>1. Imperative State</h4>
 <app-code-presenter-old [fileName]="currentFile()" [showRenderCount]="true"></app-code-presenter-old>
 
 <hr>
-<h4>Observable State</h4>
+<h4>2. Observable State</h4>
 <app-code-presenter-observable [fileName]="currentFile()" [showRenderCount]="true"></app-code-presenter-observable>
 
 <hr>
-<h4>Signal State</h4>
+<h4>3. Signal State</h4>
 <app-code-presenter-signal [fileName]="currentFile()" [showRenderCount]="true"></app-code-presenter-signal>
 
 <hr>
