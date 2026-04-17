@@ -1,28 +1,32 @@
-import {MenuItem, MenuItemEnum} from '@models/menu-item';
+import { MenuItem, MenuItemEnum } from '@models/menu-item';
 
 export const DEFAULT_MENU_LIST: MenuItem[] = [
   {
     name: MenuItemEnum.Home,
-    link: '/home'
+    link: '/home',
   },
   {
     name: MenuItemEnum.DemoChangeDetection,
-    link: '/demo-change-detection'
+    link: '/demo-change-detection',
   },
   {
     name: MenuItemEnum.DemoSwitchMap,
-    link: '/demo-switch-map'
+    link: '/demo-switch-map',
+  },
+  {
+    name: MenuItemEnum.DemoCatchError,
+    link: '/demo-catch-error',
   },
   {
     name: MenuItemEnum.DemoMulticast,
-    link: '/demo-multicast'
+    link: '/demo-multicast',
   },
   {
     name: MenuItemEnum.DemoPolling,
-    link: '/demo-polling'
+    link: '/demo-polling',
   },
   {
     name: MenuItemEnum.DemoPollingByList,
-    link: '/demo-polling-by-list'
-  }
+    link: '/demo-polling-by-list',
+  },
 ];

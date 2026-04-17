@@ -1,0 +1,14 @@
+<h3>RxJS CatchError Operator</h3>
+
+<hr />
+
+<app-code-presenter-signal fileName="demo-catch-error/catch-error-operator.ts">
+</app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplainCatchError()) {
+<app-code-presenter-signal [fileName]="'explain-catch-error.md'"></app-code-presenter-signal>
+} @else {
+<button class="btn" (click)="triggerExplainCatchError()">Explain Catch Error</button>
+}

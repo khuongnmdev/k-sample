@@ -5,6 +5,7 @@ import { DemoChangeDetection } from '@pages/demo-change-detection/demo-change-de
 import { DemoPolling } from '@pages/demo-polling/demo-polling';
 import { DemoPollingByList } from '@pages/demo-polling-by-list/demo-polling-by-list';
 import { DemoSwitchMap } from '@pages/demo-switch-map/demo-switch-map';
+import { DemoCatchError } from '@pages/catch-error-operator/demo-catch-error';
 
 export const routes: Routes = [
   {
@@ -18,6 +19,10 @@ export const routes: Routes = [
   {
     path: 'demo-switch-map',
     component: DemoSwitchMap,
+  },
+  {
+    path: 'demo-catch-error',
+    component: DemoCatchError,
   },
   {
     path: 'demo-polling',
