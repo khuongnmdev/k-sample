@@ -6,6 +6,7 @@ import { DemoPolling } from '@pages/demo-polling/demo-polling';
 import { DemoPollingByList } from '@pages/demo-polling-by-list/demo-polling-by-list';
 import { DemoSwitchMap } from '@pages/demo-switch-map/demo-switch-map';
 import { DemoCatchError } from '@pages/catch-error-operator/demo-catch-error';
+import { BestPracticeService } from '@pages/best-practice-service/best-practice-service';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,10 @@ export const routes: Routes = [
   {
     path: 'demo-catch-error',
     component: DemoCatchError,
+  },
+  {
+    path: 'best-practice-service',
+    component: BestPracticeService,
   },
   {
     path: 'demo-polling',

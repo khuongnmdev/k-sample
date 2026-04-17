@@ -29,4 +29,8 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     name: MenuItemEnum.DemoMulticast,
     link: '/demo-multicast',
   },
+  {
+    name: MenuItemEnum.DemoBestPracticeService,
+    link: '/best-practice-service',
+  },
 ];

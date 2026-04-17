@@ -12,4 +12,5 @@ export const MenuItemEnum = {
   DemoPolling: 'Demo Polling ',
   DemoPollingByList: 'Demo Polling By List',
   DemoMulticast: 'Demo Multicast',
+  DemoBestPracticeService: 'Best Practice Service',
 };
