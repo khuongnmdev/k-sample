@@ -1,4 +1,15 @@
 <h3>Demo Polling with Signal + Switch Map</h3>
+
+<hr />
+
+<p>
+  <b>Polling</b> là kỹ thuật tự động gọi lại API sau một khoảng thời gian cố định để cập nhật dữ
+  liệu mới nhất. Trong bản demo này, chúng ta sử dụng <b>Signals</b> để theo dõi trạng thái Login và
+  <b>switchMap</b> để tự động bật bộ đếm (Interval) khi user vào trạng thái Login, và tự động hủy bộ
+  đếm ngay khi user Logout.
+</p>
+<p><b style="color: red">Note:</b> More detail in console</p>
+
 <button class="btn" (click)="toggleState()">
   @if (isLoggedIn()) {
     Log Out
@@ -6,7 +17,7 @@
     Log In
   }
 </button>
-<hr>
+<hr />
 <p>
   Current State:
   @if (isLoggedIn()) {
@@ -15,5 +26,17 @@
     No User
   }
 </p>
-<hr>
+<hr />
 <p>Counter: {{ counter() }}</p>
+
+<hr />
+
+<app-code-presenter-signal fileName="demo-polling/polling.ts"> </app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplainPolling()) {
+  <app-code-presenter-signal [fileName]="'explain-polling.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerExplainPolling()">Explain Polling</button>
+}
