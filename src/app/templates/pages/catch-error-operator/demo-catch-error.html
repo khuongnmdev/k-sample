@@ -2,13 +2,20 @@
 
 <hr />
 
+<p>
+  Khi đã chuyển sang sử dụng <code>switchMap</code> để "duỗi thẳng" code, điều quan trọng nhất bạn
+  cần lưu ý là <b>phải có chiến thuật xử lý lỗi (catchError)</b>. Nếu một bước trong chuỗi bẻ lái gặp
+  lỗi mà không được bắt lại, nó sẽ làm "chết" hoàn toàn cả luồng Observable chính và khiến ứng dụng
+  ngưng phản hồi.
+</p>
+
 <app-code-presenter-signal fileName="demo-catch-error/catch-error-operator.ts">
 </app-code-presenter-signal>
 
 <hr />
 
 @if (this.showExplainCatchError()) {
-<app-code-presenter-signal [fileName]="'explain-catch-error.md'"></app-code-presenter-signal>
+  <app-code-presenter-signal [fileName]="'explain-catch-error.md'"></app-code-presenter-signal>
 } @else {
-<button class="btn" (click)="triggerExplainCatchError()">Explain Catch Error</button>
+  <button class="btn" (click)="triggerExplainCatchError()">Explain Catch Error</button>
 }

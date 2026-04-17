@@ -2,6 +2,12 @@
 
 <hr />
 
+<p>
+  Trong thực tế, khi một xử lý bất đồng bộ phụ thuộc vào kết quả của một xử lý trước đó (ví dụ: lấy
+  Profile xong mới lấy được danh sách Sản phẩm), cách tiếp cận bản năng nhất là lồng các hàm
+  <code>subscribe()</code> vào nhau. Đây chính là nguyên nhân dẫn đến <b>Subscribe Hell</b>.
+</p>
+
 <app-code-presenter-signal fileName="demo-switch-map/subscrible-hell.ts">
 </app-code-presenter-signal>
 
