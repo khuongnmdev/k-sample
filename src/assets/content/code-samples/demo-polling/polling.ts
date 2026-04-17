@@ -6,7 +6,7 @@ const INTERVAL_TIME = 1000;
 
 @Component({
   selector: 'app-demo-polling',
-  templateUrl: './demo-polling.html',
+  template: `<p>Open console to see the log</p>`,
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

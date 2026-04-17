@@ -4,7 +4,7 @@ import { ProductService } from '@services/product.service';
 
 @Component({
   selector: 'app-example-subscribe-hell',
-  template: `<p>Mở console để xem log</p>`,
+  template: `<p>Open console to see the log</p>`,
   standalone: true,
 })
 export class ExampleSubscribeHellComponent implements OnInit {

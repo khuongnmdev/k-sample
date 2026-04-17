@@ -8,7 +8,8 @@
   <b>switchMap</b> để tự động bật bộ đếm (Interval) khi user vào trạng thái Login, và tự động hủy bộ
   đếm ngay khi user Logout.
 </p>
-<p><b style="color: red">Note:</b> More detail in console</p>
+<p><b style="color: red">Note:</b> Open console to see the log</p>
+<hr />
 
 <button class="btn" (click)="toggleState()">
   @if (isLoggedIn()) {
@@ -20,10 +21,11 @@
 <hr />
 <p>
   Current State:
+
   @if (isLoggedIn()) {
-    User Logged In
+    <b style="color: blue">User Logged In</b>
   } @else {
-    No User
+    <b style="color: red">No User</b>
   }
 </p>
 <hr />

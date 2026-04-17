@@ -1,4 +1,21 @@
 <h3>Demo Polling List Item with Signal + Switch Map</h3>
+
+<hr />
+
+<p>
+  Trong bản demo này, chúng ta mô phỏng một bài toán thực tế:
+  <b>Polling dữ liệu dựa trên một danh sách (List ID)</b>. Bộ đếm polling sẽ chỉ hoạt động khi danh
+  sách <code>listItem</code> có phần tử. Đặc biệt, nhờ <b>switchMap</b>, mỗi khi bạn thêm hoặc xóa
+  bớt ID, luồng polling cũ sẽ bị hủy và luồng mới sẽ lập tức được khởi tạo lại với dữ liệu mới nhất
+  mà không lo bị trùng lặp.
+</p>
+@for (rs of result(); track rs) {
+  <p>{{ rs }}</p>
+}
+<p><b style="color: red">Note:</b> Open console to see the log</p>
+
+<hr />
+
 <button class="btn" (click)="addItem()">Add Item</button>
 <hr />
 
@@ -9,4 +26,15 @@
 @for (rs of result(); track rs) {
   <p>{{ rs }}</p>
 }
-<p><b style="color: red">Note:</b> More detail in console</p>
+<hr />
+
+<app-code-presenter-signal fileName="demo-polling-by-list/polling-by-list.ts">
+</app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplainPollingByList()) {
+  <app-code-presenter-signal [fileName]="'explain-polling-by-list.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerExplainPollingByList()">Explain Polling By List</button>
+}

@@ -5,7 +5,7 @@ import { filter, switchMap, EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-example-switch-map',
-  template: `<p>Mở console để xem log</p>`,
+  template: `<p>Open console to see the log</p>`,
   standalone: true,
 })
 export class ExampleSwitchMapComponent implements OnInit {

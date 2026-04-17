@@ -18,15 +18,15 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/demo-catch-error',
   },
   {
-    name: MenuItemEnum.DemoMulticast,
-    link: '/demo-multicast',
-  },
-  {
     name: MenuItemEnum.DemoPolling,
     link: '/demo-polling',
   },
   {
     name: MenuItemEnum.DemoPollingByList,
     link: '/demo-polling-by-list',
+  },
+  {
+    name: MenuItemEnum.DemoMulticast,
+    link: '/demo-multicast',
   },
 ];

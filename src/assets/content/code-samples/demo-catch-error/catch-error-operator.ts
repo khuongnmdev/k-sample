@@ -5,7 +5,7 @@ import { filter, switchMap, EMPTY, catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-example-catch-error',
-  template: `<p>Mở console để xem log</p>`,
+  template: `<p>Open console to see the log</p>`,
   standalone: true,
 })
 export class ExampleCatchErrorComponent implements OnInit {

@@ -1,40 +1,34 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { EMPTY, interval, map, Observable, of, switchMap } from 'rxjs';
-import { JsonPipe } from '@angular/common';
-import { CodePresenter } from '@components/code-presenter/code-presenter';
 
 const INTERVAL_TIME = 1000;
 
 @Component({
   selector: 'app-demo-polling-by-list',
-  imports: [JsonPipe, CodePresenter],
-  templateUrl: './demo-polling-by-list.html',
-  styleUrl: './demo-polling-by-list.scss',
+  template: '<p>Open console to see the log</p>',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DemoPollingByList {
   private readonly destroyRef = inject(DestroyRef);
-  protected showExplainPollingByList = signal<boolean>(false);
-
-  protected triggerExplainPollingByList() {
-    this.showExplainPollingByList.set(true);
-  }
 
   public readonly listItem = signal<number[]>([]);
-
   public readonly result = signal<string[]>([]);
 
+  // Lắng nghe sự thay đổi của danh sách listItem (Signal -> Observable)
   private readonly pollingSubscription = toObservable(this.listItem)
     .pipe(
-      map((list) => !!list.length), // convert number[] to boolean
+      // Chuyển đổi danh sách thành boolean: Có phần tử hay không?
+      map((list) => !!list.length),
       switchMap((shouldPolling) => {
+        // Nếu danh sách trống, ngừng bộ đếm và xóa sạch kết quả cũ
         if (!shouldPolling) return of([]);
-        // if (!shouldPolling) return EMPTY;
 
+        // Nếu có danh sách, bắt đầu bộ đếm thời gian
         return interval(INTERVAL_TIME).pipe(
-          switchMap(() => this.fetchDataByListItem(this.listItem())), // get the newest value of listItem()
+          // Mỗi nhịp đếm, thực hiện gọi API (giả lập) với danh sách hiện tại
+          switchMap(() => this.fetchDataByListItem(this.listItem())),
         );
       }),
       takeUntilDestroyed(this.destroyRef),
@@ -44,21 +38,15 @@ export class DemoPollingByList {
         this.result.set(data);
         console.log('subscribe Result:', data);
       },
-      error: (error) => {
-        console.log('subscribe Error:', error);
-      },
-      complete: () => {
-        console.log('subscribe Complete');
-      },
     });
 
   private fetchDataByListItem(listItem: number[]): Observable<string[]> {
-    const result = listItem.map((value) => `Result for ${value}`);
+    const result = listItem.map((value) => `Result for ID: ${value}`);
     return of(result);
   }
 
   addItem() {
-    const newItem = Math.floor(Math.random() * 100) + 1; // random 1-100
+    const newItem = Math.floor(Math.random() * 100) + 1;
     this.listItem.update((value) => [...value, newItem]);
   }
 

@@ -1,4 +1,15 @@
 <h3>Change Detection Comparison</h3>
+
+<hr />
+
+<p>
+  Cơ chế <b>Change Detection (CD)</b> là bộ máy trung tâm giúp Angular cập nhật giao diện khi dữ
+  liệu thay đổi. Bản demo này giúp bạn phân biệt rõ ràng sự khác biệt giữa chiến lược
+  <b>Default</b> (tự động kiểm tra lại toàn bộ cây component) và <b>OnPush</b> (chỉ kiểm tra khi
+  dữ liệu đầu vào @Input thay đổi hoặc có sự kiện tác động trực tiếp), đồng thời cho thấy sức
+  mạnh của <b>Signals</b> trong việc tối ưu hóa hiệu năng render.
+</p>
+
 <button class="btn" (click)="triggerRandomChange()">Trigger Change Detection (Random)</button>
 <p>
   Parent Change Trigger: <span class="highlight">{{ randomValue() }}</span>
