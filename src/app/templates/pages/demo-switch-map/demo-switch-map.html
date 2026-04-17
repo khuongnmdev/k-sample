@@ -1,0 +1,23 @@
+<h3>From Subscribe Hell To Switch Map</h3>
+
+<hr />
+
+<app-code-presenter-signal fileName="demo-switch-map/subscrible-hell.ts">
+</app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplainSubscribeHell()) {
+  <app-code-presenter-signal [fileName]="'explain-subscrible-hell.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerExplainSubscribeHell()">Explain Subscribe Hell</button>
+}
+
+<hr />
+@if (this.showExplainSubscribeHell()) {
+  <app-code-presenter-signal fileName="demo-switch-map/switch-map.ts"> </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal [fileName]="'explain-switch-map.md'"></app-code-presenter-signal>
+}

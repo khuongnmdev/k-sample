@@ -1,4 +1,4 @@
-<h3>Explain Change Detection Difference</h3>
+<h3>Change Detection Comparison</h3>
 <button class="btn" (click)="triggerRandomChange()">Trigger Change Detection (Random)</button>
 <p>
   Parent Change Trigger: <span class="highlight">{{ randomValue() }}</span>
@@ -18,14 +18,14 @@
 
 <hr>
 @if (this.showExplainOnPush()) {
-  <app-code-presenter-signal [fileName]="'explain-on-push.md'"></app-code-presenter-signal>
+<app-code-presenter-signal [fileName]="'explain-on-push.md'"></app-code-presenter-signal>
 } @else {
-  <button class="btn" (click)="triggerExplainOnPush()">Explain OnPush</button>
+<button class="btn" (click)="triggerExplainOnPush()">Explain OnPush</button>
 }
 
 <hr>
 @if (this.showSummary()) {
-  <app-code-presenter-signal [fileName]="'explain-change-detection.md'"></app-code-presenter-signal>
+<app-code-presenter-signal [fileName]="'explain-change-detection.md'"></app-code-presenter-signal>
 } @else {
-  <button class="btn" (click)="triggerSummary()">Summary</button>
+<button class="btn" (click)="triggerSummary()">Summary</button>
 }
