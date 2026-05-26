@@ -9,13 +9,13 @@ import {
   PLATFORM_ID,
   Signal,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { EMPTY, map, Observable, of, switchMap } from 'rxjs';
-import { MarkdownModule } from 'ngx-markdown';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { LoadingSkeleton } from '@components/loading-skeleton/loading-skeleton';
-import { CommonService, DEFAULT_LANGUAGE } from '@services/common.service';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
+import {HttpClient} from '@angular/common/http';
+import {EMPTY, map, Observable, of, switchMap} from 'rxjs';
+import {MarkdownModule} from 'ngx-markdown';
+import {toObservable, toSignal} from '@angular/core/rxjs-interop';
+import {LoadingSkeleton} from '@components/loading-skeleton/loading-skeleton';
+import {CommonService, DEFAULT_LANGUAGE} from '@services/common.service';
 
 @Component({
   selector: 'app-code-presenter-signal',
@@ -34,8 +34,7 @@ export class CodePresenter implements DoCheck {
 
   protected renderCount = 0;
 
-  fileName = input.required<string>();
-
+  readonly fileName = input.required<string>();
   readonly showRenderCount = input(false);
 
   ngDoCheck(): void {
@@ -48,14 +47,14 @@ export class CodePresenter implements DoCheck {
   private readonly fileInfo = computed(() => {
     const fileName = this.fileName();
     if (!fileName) {
-      return { filePath: '', language: DEFAULT_LANGUAGE };
+      return {filePath: '', language: DEFAULT_LANGUAGE};
     }
     const language = this.commonService.getLanguageFromFile(fileName);
     const filePath =
       language === 'md'
         ? `assets/content/markdown/${fileName}`
         : `assets/content/code-samples/${fileName}`;
-    return { filePath, language };
+    return {filePath, language};
   });
 
   // Declare Observable to handle async data fetching file content
@@ -70,7 +69,7 @@ export class CodePresenter implements DoCheck {
         return of('');
       }
 
-      return this.http.get(info.filePath, { responseType: 'text' }).pipe(
+      return this.http.get(info.filePath, {responseType: 'text'}).pipe(
         map((codeContent) => {
           const isMarkdown = info.language === 'md';
           return isMarkdown ? codeContent : `\`\`\`${info.language}\n${codeContent}\n\`\`\``;

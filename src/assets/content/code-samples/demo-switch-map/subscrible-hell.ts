@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { UserService } from '@services/user.service';
-import { ProductService } from '@services/product.service';
+import {Component, inject, OnInit} from '@angular/core';
+import {UserService} from '@services/user.service';
+import {ProductService} from '@services/product.service';
 
 @Component({
   selector: 'app-example-subscribe-hell',
@@ -12,8 +12,6 @@ export class ExampleSubscribeHellComponent implements OnInit {
   private readonly productService = inject(ProductService);
 
   ngOnInit() {
-    console.log('Bắt đầu check luồng dữ liệu Subscribe Hell...');
-
     // Tầng 1: Subscribe lắng nghe trạng thái đăng nhập
     this.userService.isLoggedIn$.subscribe((isLoggedIn) => {
       if (isLoggedIn) {
