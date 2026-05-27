@@ -1,4 +1,4 @@
-import { MenuItem, MenuItemEnum } from '@models/menu-item';
+import {MenuItem, MenuItemEnum} from '@models/menu-item';
 
 export const DEFAULT_MENU_LIST: MenuItem[] = [
   {
@@ -8,6 +8,10 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
   {
     name: MenuItemEnum.DemoChangeDetection,
     link: '/demo-change-detection',
+  },
+  {
+    name: MenuItemEnum.ExplainReactiveImperative,
+    link: '/explain-reactive-vs-imperative',
   },
   {
     name: MenuItemEnum.DemoSwitchMap,

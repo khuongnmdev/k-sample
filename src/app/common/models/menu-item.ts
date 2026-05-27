@@ -7,6 +7,7 @@ export const MenuItemEnum = {
   Home: 'Home',
   About: 'About',
   DemoChangeDetection: 'Demo Change Detection',
+  ExplainReactiveImperative: 'Reactive vs Imperative',
   DemoSwitchMap: 'Explain Switch Map',
   DemoCatchError: 'Explain Catch Error',
   DemoPolling: 'Demo Polling ',

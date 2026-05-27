@@ -1,12 +1,13 @@
-import { Routes } from '@angular/router';
-import { HomePage } from '@pages/home-page/home-page.component';
-import { NotFoundPage } from '@pages/not-found-page/not-found-page';
-import { DemoChangeDetection } from '@pages/demo-change-detection/demo-change-detection';
-import { DemoPolling } from '@pages/demo-polling/demo-polling';
-import { DemoPollingByList } from '@pages/demo-polling-by-list/demo-polling-by-list';
-import { DemoSwitchMap } from '@pages/demo-switch-map/demo-switch-map';
-import { DemoCatchError } from '@pages/catch-error-operator/demo-catch-error';
-import { BestPracticeService } from '@pages/best-practice-service/best-practice-service';
+import {Routes} from '@angular/router';
+import {HomePage} from '@pages/home-page/home-page.component';
+import {NotFoundPage} from '@pages/not-found-page/not-found-page';
+import {DemoChangeDetection} from '@pages/demo-change-detection/demo-change-detection';
+import {DemoPolling} from '@pages/demo-polling/demo-polling';
+import {DemoPollingByList} from '@pages/demo-polling-by-list/demo-polling-by-list';
+import {DemoSwitchMap} from '@pages/demo-switch-map/demo-switch-map';
+import {DemoCatchError} from '@pages/catch-error-operator/demo-catch-error';
+import {BestPracticeService} from '@pages/best-practice-service/best-practice-service';
+import {ExplainReactiveImperative} from '@pages/explain-reactive-imperative/explain-reactive-imperative';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,10 @@ export const routes: Routes = [
   {
     path: 'demo-change-detection',
     component: DemoChangeDetection,
+  },
+  {
+    path: 'explain-reactive-vs-imperative',
+    component: ExplainReactiveImperative,
   },
   {
     path: 'demo-switch-map',

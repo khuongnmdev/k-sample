@@ -1,0 +1,46 @@
+<h3>Explain Reactive vs Imperative State Management</h3>
+
+<hr />
+
+<p>
+  Trong phát triển ứng dụng Angular, cách chúng ta quản lý và đồng bộ trạng thái (state management) có ảnh hưởng cực kỳ quan trọng tới hiệu suất, tính dễ đọc và bảo trì của mã nguồn. 
+  Trang này so sánh 3 cách tiếp cận phổ biến khi xây dựng tính năng tìm kiếm và lọc danh mục sản phẩm: <b>Imperative State</b> (Mệnh lệnh truyền thống), <b>Observable State</b> (Phản ứng luồng RxJS), và <b>Signal State</b> (Phản ứng hạt mịn Signal).
+</p>
+
+<hr />
+
+<h4>1. Imperative State (Lập trình Mệnh lệnh)</h4>
+<p>
+  Tự tay bắt sự kiện, cập nhật giá trị biến, và trực tiếp gọi hàm cập nhật logic kết quả.
+</p>
+<app-code-presenter-old fileName="explain-reactive-imperative/imperative.ts" [showRenderCount]="true"></app-code-presenter-old>
+
+<hr />
+
+<h4>2. Observable State (Lập trình Phản ứng - RxJS)</h4>
+<p>
+  Biểu diễn các nguồn dữ liệu đầu vào dưới dạng luồng dữ liệu (Streams). Phối hợp các luồng với toán tử và tự động cập nhật ngoài giao diện nhờ <code>AsyncPipe</code>.
+</p>
+<app-code-presenter-observable fileName="explain-reactive-imperative/reactive.ts" [showRenderCount]="true"></app-code-presenter-observable>
+
+<hr />
+
+<h4>3. Signal State (Lập trình Phản ứng - Angular Signals)</h4>
+<p>
+  Cách tiếp cận khuyến nghị cho Angular hiện đại. Sử dụng cơ chế tự động ghi nhận phụ thuộc cực kỳ tối ưu thông qua <code>computed</code> signal.
+</p>
+<app-code-presenter-signal fileName="explain-reactive-imperative/signals.ts" [showRenderCount]="true"></app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplanation()) {
+  <app-code-presenter-signal fileName="explain-reactive-imperative.md"></app-code-presenter-signal>
+  
+  <div style="margin-top: 1.5rem; text-align: center;">
+    <button class="btn" (click)="triggerExplanation()">Ẩn so sánh chi tiết</button>
+  </div>
+} @else {
+  <div style="margin-top: 1.5rem; text-align: center;">
+    <button class="btn" (click)="triggerExplanation()">Xem so sánh chi tiết & Phân tích cấu trúc</button>
+  </div>
+}
