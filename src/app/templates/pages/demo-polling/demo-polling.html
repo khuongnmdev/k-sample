@@ -1,12 +1,17 @@
-<h3>Demo Polling with Signal + Switch Map</h3>
+<h3>Demo Polling with Signal + SwitchMap + Timer</h3>
 
 <hr />
 
 <p>
   <b>Polling</b> là kỹ thuật tự động gọi lại API sau một khoảng thời gian cố định để cập nhật dữ
-  liệu mới nhất. Trong bản demo này, chúng ta sử dụng <b>Signals</b> để theo dõi trạng thái Login và
-  <b>switchMap</b> để tự động bật bộ đếm (Interval) khi user vào trạng thái Login, và tự động hủy bộ
-  đếm ngay khi user Logout.
+  liệu mới nhất.
+  <br />
+  Demo này dùng <b>Signals</b> theo dõi trạng thái Login và <b>switchMap</b> + <b>timer</b> để
+  bật/tắt polling.
+  <br />
+  Login: <code>timer(0, 1000)</code> poll ngay lập tức, sau đó lặp lại mỗi giây.
+  <br />
+  Logout: luồng bị hủy ngay, không cần unsubscribe thủ công.
 </p>
 <p><b style="color: red">Note:</b> Open console to see the log</p>
 <hr />

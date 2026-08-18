@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { EMPTY, interval, switchMap } from 'rxjs';
-import { CodePresenter } from '@components/code-presenter/code-presenter';
+import {ChangeDetectionStrategy, Component, DestroyRef, inject, signal} from '@angular/core';
+import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
+import {EMPTY, switchMap, timer} from 'rxjs';
+import {CodePresenter} from '@components/code-presenter/code-presenter';
 
 const INTERVAL_TIME = 1000;
 
@@ -31,7 +31,7 @@ export class DemoPolling {
     .pipe(
       switchMap((shouldPolling) => {
         if (!shouldPolling) return EMPTY;
-        return interval(INTERVAL_TIME);
+        return timer(0, INTERVAL_TIME); // poll ngay lập tức, sau đó lặp lại mỗi INTERVAL_TIME
       }),
       takeUntilDestroyed(this.destroyRef)
     )
