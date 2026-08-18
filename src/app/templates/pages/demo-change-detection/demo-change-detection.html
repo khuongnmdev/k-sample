@@ -3,11 +3,13 @@
 <hr />
 
 <p>
-  Cơ chế <b>Change Detection (CD)</b> là bộ máy trung tâm giúp Angular cập nhật giao diện khi dữ
-  liệu thay đổi. Bản demo này giúp bạn phân biệt rõ ràng sự khác biệt giữa chiến lược
-  <b>Default</b> (tự động kiểm tra lại toàn bộ cây component) và <b>OnPush</b> (chỉ kiểm tra khi
-  dữ liệu đầu vào @Input thay đổi hoặc có sự kiện tác động trực tiếp), đồng thời cho thấy sức
-  mạnh của <b>Signals</b> trong việc tối ưu hóa hiệu năng render.
+  <b>Change Detection (CD)</b> là bộ máy trung tâm giúp Angular cập nhật giao diện khi dữ liệu thay
+  đổi.
+  <br />
+  Demo này so sánh chiến lược <b>Default</b> (kiểm tra lại toàn bộ cây component) với
+  <b>OnPush</b> (chỉ kiểm tra khi @Input đổi hoặc có sự kiện trực tiếp).
+  <br />
+  Đồng thời cho thấy <b>Signals</b> giúp tối ưu việc render như thế nào.
 </p>
 
 <button class="btn" (click)="triggerRandomChange()">Trigger Change Detection (Random)</button>
@@ -15,28 +17,70 @@
   Parent Change Trigger: <span class="highlight">{{ randomValue() }}</span>
 </p>
 
-<hr>
+<hr />
 <h4>1. Imperative State</h4>
-<app-code-presenter-old [fileName]="currentFile()" [showRenderCount]="true"></app-code-presenter-old>
+<app-code-presenter-old
+  [fileName]="currentFile()"
+  [showRenderCount]="true"
+></app-code-presenter-old>
 
-<hr>
+<hr />
 <h4>2. Observable State</h4>
-<app-code-presenter-observable [fileName]="currentFile()" [showRenderCount]="true"></app-code-presenter-observable>
+<app-code-presenter-observable
+  [fileName]="currentFile()"
+  [showRenderCount]="true"
+></app-code-presenter-observable>
 
-<hr>
+<hr />
 <h4>3. Signal State</h4>
-<app-code-presenter-signal [fileName]="currentFile()" [showRenderCount]="true"></app-code-presenter-signal>
+<app-code-presenter-signal
+  [fileName]="currentFile()"
+  [showRenderCount]="true"
+></app-code-presenter-signal>
 
-<hr>
+<hr />
+<h4>4. Ảnh hưởng của NgZone - thí nghiệm với window.setInterval</h4>
+<p>
+  Chế độ hiện tại: <span class="highlight">{{ cdMode }}</span> - đổi provider trong
+  <code>app.config.ts</code> để switch.
+  <br />
+  Nút bên dưới bật một <code>window.setInterval</code> tăng một biến thường (không phải signal) mỗi
+  giây.
+  <br />
+  Với <b>Zone.js</b>: NgZone vá (patch) setInterval, sau mỗi tick tự chạy CD cho TOÀN BỘ cây
+  component - số tự nhảy, Render Count của component Default (mục 1) tăng theo từng giây.
+  <br />
+  Với <b>Zoneless</b>: biến vẫn tăng trong console nhưng UI đứng im - không ai báo cho Angular biết
+  cần check lại.
+  <br />
+  Khi Zoneless, bấm <b>Trigger Change Detection (Random)</b> trong lúc interval chạy: sự kiện click
+  kích hoạt CD, giá trị mới nhất hiện ra ngay.
+</p>
+
+<button class="btn" (click)="toggleZoneInterval()">
+  @if (intervalRunning()) {
+    Stop window.setInterval
+  } @else {
+    Start window.setInterval
+  }
+</button>
+<p>
+  Plain counter (biến thường): <span class="highlight">{{ plainTickCount }}</span>
+  @if (intervalRunning()) {
+    <em> - interval đang chạy, xem console...</em>
+  }
+</p>
+
+<hr />
 @if (this.showExplainOnPush()) {
-<app-code-presenter-signal [fileName]="'explain-on-push.md'"></app-code-presenter-signal>
+  <app-code-presenter-signal [fileName]="'explain-on-push.md'"></app-code-presenter-signal>
 } @else {
-<button class="btn" (click)="triggerExplainOnPush()">Explain OnPush</button>
+  <button class="btn" (click)="triggerExplainOnPush()">Explain OnPush</button>
 }
 
-<hr>
+<hr />
 @if (this.showSummary()) {
-<app-code-presenter-signal [fileName]="'explain-change-detection.md'"></app-code-presenter-signal>
+  <app-code-presenter-signal [fileName]="'explain-change-detection.md'"></app-code-presenter-signal>
 } @else {
-<button class="btn" (click)="triggerSummary()">Summary</button>
+  <button class="btn" (click)="triggerSummary()">Summary</button>
 }
