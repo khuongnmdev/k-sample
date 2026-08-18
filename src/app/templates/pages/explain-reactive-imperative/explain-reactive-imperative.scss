@@ -1,3 +1,30 @@
 :host {
   display: block;
 }
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+.comparison-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  h4 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .desc-text {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.85;
+    min-height: 38px;
+  }
+}

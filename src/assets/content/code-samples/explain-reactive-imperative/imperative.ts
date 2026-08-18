@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-imperative-demo',
@@ -8,24 +8,23 @@ import { Component } from '@angular/core';
       <button class="btn-danger">Delete Product</button>
     }
   `,
-  standalone: true
+  standalone: true,
 })
 export class ImperativeDemoComponent {
   protected isLoggedIn = false;
-  protected userRole = 'admin'; // Giả lập login với quyền admin
+  protected userRole = 'guest';
   protected showDeleteButton = false;
 
-  // Mỗi khi có thay đổi, bắt buộc phải nhớ gọi hàm cập nhật này
-  private updateUI() {
-    if (this.isLoggedIn && this.userRole === 'admin') {
-      this.showDeleteButton = true;
-    } else {
-      this.showDeleteButton = false;
-    }
-  }
-
+  // CÙNG sự kiện login() - xử lý kiểu Mệnh lệnh (Imperative):
+  // tự tay cập nhật từng biến, rồi PHẢI NHỚ gọi hàm tính lại kết quả
   protected login() {
     this.isLoggedIn = true;
-    this.updateUI(); // Gọi thủ công (Manual call)
+    this.userRole = 'admin';
+    this.updateDeleteButton(); // Quên dòng này là UI sai ngay!
+  }
+
+  // Logic phái sinh phải được gọi thủ công tại MỌI nơi làm thay đổi state
+  private updateDeleteButton() {
+    this.showDeleteButton = this.isLoggedIn && this.userRole === 'admin';
   }
 }

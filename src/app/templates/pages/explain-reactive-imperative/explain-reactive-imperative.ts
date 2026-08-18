@@ -1,11 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { CodePresenter } from '@components/code-presenter/code-presenter';
-import { CodePresenterObservable } from '@components/code-presenter-observable/code-presenter-observable';
-import { CodePresenterOld } from '@components/code-presenter-old/code-presenter-old';
+import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {CodePresenter} from '@components/code-presenter/code-presenter';
 
 @Component({
   selector: 'app-explain-reactive-imperative',
-  imports: [CodePresenter, CodePresenterObservable, CodePresenterOld],
+  imports: [CodePresenter],
   templateUrl: './explain-reactive-imperative.html',
   styleUrl: './explain-reactive-imperative.scss',
   standalone: true,
