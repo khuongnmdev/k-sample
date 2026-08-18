@@ -27,7 +27,13 @@ export class DemoChangeDetection {
   private intervalId?: number;
 
   constructor() {
-    this.destroyRef.onDestroy(() => window.clearInterval(this.intervalId));
+    // Guard for SSR/prerender: `window` does not exist on the server,
+    // and the interval only ever starts in the browser (on click)
+    this.destroyRef.onDestroy(() => {
+      if (this.intervalId !== undefined) {
+        window.clearInterval(this.intervalId);
+      }
+    });
   }
 
   protected triggerRandomChange() {

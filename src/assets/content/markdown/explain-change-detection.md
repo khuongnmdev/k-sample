@@ -7,7 +7,7 @@
 | **Source of Truth** | Biến thường (`currentFileName`, `codeMarkdown`).                                                                                                                                                                                                                                             |
 | **Data Flow**       | `@Input` setter → gọi hàm (`setupCodeMarkdown`) → `HttpClient.get()` → `.subscribe()` → gán giá trị vào biến (`this.codeMarkdown = ...`).                                                                                                                                                    |
 | **Ưu điểm**         | **Dễ hiểu** với người mới lập trình Angular hoặc lập trình hướng đối tượng truyền thống.                                                                                                                                                                                                     |
-| **Nhược điểm**      | **Rủi ro CD cao:** Khi dùng `OnPush`, việc gán giá trị trực tiếp có thể không luôn kích hoạt Change Detection (CD) đúng cách trong mọi tình huống, **dễ dính bẫy CD** (cần `markForCheck` thủ công nếu việc gán xảy ra bên ngoài `NgZone` hoặc trong các logic phức tạp). Khó compose logic. |
+| **Nhược điểm**      | **Không có cơ chế báo thay đổi:** Gán giá trị vào biến thường không phát ra tín hiệu nào cho Angular. UI chỉ "tình cờ" được cập nhật khi zone.js + `Default` CD quét lại toàn bộ cây; với `OnPush` hoặc Zoneless thì view sẽ đứng im (phải tự gọi `markForCheck()` - bất kể việc gán xảy ra trong hay ngoài `NgZone`). Khó compose logic. |
 
 ---
 
@@ -18,7 +18,7 @@ Sử dụng RxJS để quản lý luồng dữ liệu, đây là phương pháp 
 | Đặc điểm            | Chi tiết                                                                                                                                                                                          |
 | :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Source of Truth** | `BehaviorSubject` (cho Input) và Stream kết quả (`codeMarkdown$`).                                                                                                                                |
-| **Data Flow**       | `@Input` setter → `fileNameSubject.next(value)` → pipeline xử lý (`.pipe(switchMap(), map(), ...)`) → template dùng `async pipe`.                                                                 |
+| **Data Flow**       | `@Input` setter → `currentFileName$.next(value)` → pipeline xử lý (`.pipe(switchMap(), map(), ...)`) → template dùng `async pipe`.                                                                |
 | **Ưu điểm**         | **Rất "hợp" với OnPush:** `Async Pipe` tự động quản lý việc unsubscribe và gọi `markForCheck()` mỗi khi có dữ liệu mới, loại bỏ nhu cầu can thiệp CD thủ công. Logic xử lý rõ ràng (declarative). |
 | **Nhược điểm**      | **Boilerplate RxJS:** Cần phải khai báo Subject, quản lý pipe, và đôi khi RxJS có thể phức tạp với người mới.                                                                                     |
 
@@ -41,4 +41,4 @@ Sử dụng Angular Signals, mô hình khuyến nghị cho Angular hiện đại
 
 - Mô hình **Signal State + OnPush** là lựa chọn **tối ưu nhất** cho Angular hiện đại (từ v18 trở lên) về cả hiệu suất lẫn trải nghiệm lập trình (Developer Experience).
 - Mô hình **Observable (RxJS)** vẫn rất mạnh mẽ cho các logic xử lý stream phức tạp và phối hợp tốt với `OnPush` qua `async` pipe.
-- Mô hình **Imperative (Cũ)** nên hạn chế sử dụng vì dễ gây ra lỗi "Expression Changed After It Has Been Checked" và khó tối ưu hiệu suất cho ứng dụng lớn.
+- Mô hình **Imperative (Cũ)** nên hạn chế sử dụng vì không có cơ chế báo cho Angular biết dữ liệu đã thay đổi - UI dễ "đứng hình" khi chuyển sang `OnPush`/Zoneless (như thí nghiệm `window.setInterval` ở trên) và khó tối ưu hiệu suất cho ứng dụng lớn.

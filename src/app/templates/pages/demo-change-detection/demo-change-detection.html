@@ -2,16 +2,17 @@
 
 <hr />
 
-<p>
+<div>
   <b>Change Detection (CD)</b> là bộ máy trung tâm giúp Angular cập nhật giao diện khi dữ liệu thay
   đổi.
   <br />
   Demo này so sánh chiến lược <b>Default</b> (kiểm tra lại toàn bộ cây component) với
-  <b>OnPush</b> (chỉ kiểm tra khi @Input đổi hoặc có sự kiện trực tiếp).
+  <b>OnPush</b> (chỉ kiểm tra khi có tín hiệu rõ ràng: @Input đổi, sự kiện, Signal/AsyncPipe phát
+  giá trị mới...).
   <br />
   Đồng thời cho thấy <b>Signals</b> giúp tối ưu việc render như thế nào.
-</p>
-
+</div>
+<hr />
 <button class="btn" (click)="triggerRandomChange()">Trigger Change Detection (Random)</button>
 <p>
   Parent Change Trigger: <span class="highlight">{{ randomValue() }}</span>
@@ -55,6 +56,11 @@
   <br />
   Khi Zoneless, bấm <b>Trigger Change Detection (Random)</b> trong lúc interval chạy: sự kiện click
   kích hoạt CD, giá trị mới nhất hiện ra ngay.
+  <br />
+  <em>
+    Lưu ý: app cố tình giữ zone.js trong polyfills để switch được giữa hai chế độ, nên khi chạy
+    Zoneless console sẽ hiện warning <code>NG0914</code> - đây là chủ đích của demo.
+  </em>
 </p>
 
 <button class="btn" (click)="toggleZoneInterval()">
