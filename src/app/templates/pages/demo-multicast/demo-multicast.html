@@ -1,0 +1,171 @@
+<h3>RxJS Unicast vs Multicast (share)</h3>
+
+<hr />
+
+<p>
+  Mặc định, các Observable trong RxJS là <b>Unicast</b> (Cold) - nghĩa là mỗi lần gọi
+  <code>.subscribe()</code> sẽ sinh ra một phiên thực thi (execution) độc lập và kích hoạt lại toàn
+  bộ các side-effects (như gửi HTTP Request, bộ đếm interval).
+  <br />
+  Ngược lại, <b>Multicast</b> (Hot) sử dụng toán tử <code>share()</code> cho phép nhiều subscriber
+  dùng chung một phiên thực thi duy nhất, tiết kiệm tối đa tài nguyên hệ thống.
+</p>
+
+<hr />
+
+<div class="simulation-grid">
+  <!-- UNICAST CARD -->
+  <div class="sim-card unicast">
+    <div class="sim-header">
+      <h4>1. Unicast Simulation (Mặc định)</h4>
+      <button class="btn btn-secondary btn-sm" (click)="resetUnicast()">Reset</button>
+    </div>
+
+    <div class="side-effect-box">
+      Số lần side-effect chạy: <span class="badge badge-warning">{{ unicastSideEffects() }}</span>
+      <p class="desc">(Tăng lên mỗi khi có bất kỳ Subscriber nào nhận dữ liệu)</p>
+    </div>
+
+    <div class="observers-container">
+      <!-- OBSERVER A -->
+      <div class="observer-box border-a">
+        <div class="obs-header">
+          <span>Observer A</span>
+          <span class="status-badge" [class.active]="isUnicastSubscribedA()">
+            {{ isUnicastSubscribedA() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="toggleUnicastA()">
+          {{ isUnicastSubscribedA() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (unicastValuesA().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of unicastValuesA(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- OBSERVER B -->
+      <div class="observer-box border-b">
+        <div class="obs-header">
+          <span>Observer B</span>
+          <span class="status-badge" [class.active]="isUnicastSubscribedB()">
+            {{ isUnicastSubscribedB() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="toggleUnicastB()">
+          {{ isUnicastSubscribedB() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (unicastValuesB().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of unicastValuesB(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MULTICAST CARD -->
+  <div class="sim-card multicast">
+    <div class="sim-header">
+      <h4>2. Multicast Simulation (Gắn share())</h4>
+      <button class="btn btn-secondary btn-sm" (click)="resetMulticast()">Reset</button>
+    </div>
+
+    <div class="side-effect-box">
+      Số lần side-effect chạy: <span class="badge badge-success">{{ multicastSideEffects() }}</span>
+      <p class="desc">(Chỉ tăng 1 lần duy nhất cho mỗi nhịp, bất kể bao nhiêu subscriber)</p>
+    </div>
+
+    <div class="observers-container">
+      <!-- OBSERVER A -->
+      <div class="observer-box border-a">
+        <div class="obs-header">
+          <span>Observer A</span>
+          <span class="status-badge" [class.active]="isMulticastSubscribedA()">
+            {{ isMulticastSubscribedA() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="toggleMulticastA()">
+          {{ isMulticastSubscribedA() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (multicastValuesA().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of multicastValuesA(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- OBSERVER B -->
+      <div class="observer-box border-b">
+        <div class="obs-header">
+          <span>Observer B</span>
+          <span class="status-badge" [class.active]="isMulticastSubscribedB()">
+            {{ isMulticastSubscribedB() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="toggleMulticastB()">
+          {{ isMulticastSubscribedB() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (multicastValuesB().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of multicastValuesB(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr />
+
+<h4>Code Samples</h4>
+
+<div class="code-samples-grid">
+  <div>
+    <h5>Unicast Stream</h5>
+    <app-code-presenter-signal fileName="demo-multicast/unicast.ts"></app-code-presenter-signal>
+  </div>
+  <div>
+    <h5>Multicast Stream (Shared)</h5>
+    <app-code-presenter-signal fileName="demo-multicast/multicast.ts"></app-code-presenter-signal>
+  </div>
+</div>
+
+<hr />
+
+@if (this.showExplainMulticast()) {
+  <app-code-presenter-signal fileName="explain-multicast.md"></app-code-presenter-signal>
+
+  <div style="margin-top: 1.5rem; text-align: center">
+    <button class="btn" (click)="triggerExplainMulticast()">Hide</button>
+  </div>
+} @else {
+  <div style="margin-top: 1.5rem; text-align: center">
+    <button class="btn" (click)="triggerExplainMulticast()">Explain</button>
+  </div>
+}

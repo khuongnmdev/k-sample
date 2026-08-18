@@ -12,6 +12,6 @@ export const MenuItemEnum = {
   DemoCatchError: 'Explain Catch Error',
   DemoPolling: 'Demo Polling ',
   DemoPollingByList: 'Demo Polling By List',
-  DemoMulticast: 'Demo Multicast',
+  DemoBasicMulticast: 'Demo Basic Multicast',
   DemoBestPracticeService: 'Best Practice Service',
 };

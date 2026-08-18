@@ -30,7 +30,7 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/demo-polling-by-list',
   },
   {
-    name: MenuItemEnum.DemoMulticast,
+    name: MenuItemEnum.DemoBasicMulticast,
     link: '/demo-multicast',
   },
   {
