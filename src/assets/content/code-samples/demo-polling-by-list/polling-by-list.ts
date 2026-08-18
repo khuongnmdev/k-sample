@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { EMPTY, interval, map, Observable, of, switchMap } from 'rxjs';
+import { map, Observable, of, switchMap, timer } from 'rxjs';
 
 const INTERVAL_TIME = 1000;
 
@@ -19,15 +19,16 @@ export class DemoPollingByList {
   // Lắng nghe sự thay đổi của danh sách listItem (Signal -> Observable)
   private readonly pollingSubscription = toObservable(this.listItem)
     .pipe(
-      // Chuyển đổi danh sách thành boolean: Có phần tử hay không?
+      // Chuyển danh sách thành boolean: có phần tử hay không?
       map((list) => !!list.length),
       switchMap((shouldPolling) => {
-        // Nếu danh sách trống, ngừng bộ đếm và xóa sạch kết quả cũ
+        // Danh sách trống: dừng polling, phát mảng rỗng để UI xóa kết quả cũ
+        // (nếu trả về EMPTY: polling vẫn dừng, nhưng UI giữ nguyên dữ liệu cũ)
         if (!shouldPolling) return of([]);
 
-        // Nếu có danh sách, bắt đầu bộ đếm thời gian
-        return interval(INTERVAL_TIME).pipe(
-          // Mỗi nhịp đếm, thực hiện gọi API (giả lập) với danh sách hiện tại
+        // Danh sách có phần tử: poll ngay lập tức, sau đó lặp lại mỗi INTERVAL_TIME
+        return timer(0, INTERVAL_TIME).pipe(
+          // Mỗi nhịp poll, gọi API (giả lập) với danh sách MỚI NHẤT
           switchMap(() => this.fetchDataByListItem(this.listItem())),
         );
       }),

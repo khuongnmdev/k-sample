@@ -1,17 +1,17 @@
-<h3>Demo Polling List Item with Signal + Switch Map</h3>
+<h3>Demo Polling List Item with Signal + SwitchMap + Timer</h3>
 
 <hr />
 
 <p>
-  Trong bản demo này, chúng ta mô phỏng một bài toán thực tế:
-  <b>Polling dữ liệu dựa trên một danh sách (List ID)</b>. Bộ đếm polling sẽ chỉ hoạt động khi danh
-  sách <code>listItem</code> có phần tử. Đặc biệt, nhờ <b>switchMap</b>, mỗi khi bạn thêm hoặc xóa
-  bớt ID, luồng polling cũ sẽ bị hủy và luồng mới sẽ lập tức được khởi tạo lại với dữ liệu mới nhất
-  mà không lo bị trùng lặp.
+  Bài toán thực tế: <b>Polling dữ liệu dựa trên một danh sách (List ID)</b>.
+  <br />
+  Polling chỉ chạy khi danh sách <code>listItem</code> có phần tử.
+  <br />
+  Thêm hoặc xóa ID: <b>switchMap</b> hủy luồng polling cũ và khởi tạo luồng mới với dữ liệu mới
+  nhất, không lo trùng lặp.
+  <br />
+  Danh sách trống: polling dừng, kết quả trên màn hình được xóa sạch.
 </p>
-@for (rs of result(); track rs) {
-  <p>{{ rs }}</p>
-}
 <p><b style="color: red">Note:</b> Open console to see the log</p>
 
 <hr />
@@ -19,7 +19,7 @@
 <button class="btn" (click)="addItem()">Add Item</button>
 <hr />
 
-<button class="btn" (click)="removeItem()" [disabled]="!this.listItem()">Remove Item</button>
+<button class="btn" (click)="removeItem()" [disabled]="!listItem().length">Remove Item</button>
 <hr />
 <p>List Item: {{ listItem() | json }}</p>
 <hr />

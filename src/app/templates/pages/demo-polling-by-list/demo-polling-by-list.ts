@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { EMPTY, interval, map, Observable, of, switchMap } from 'rxjs';
-import { JsonPipe } from '@angular/common';
-import { CodePresenter } from '@components/code-presenter/code-presenter';
+import {ChangeDetectionStrategy, Component, DestroyRef, inject, signal} from '@angular/core';
+import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
+import {EMPTY, map, Observable, of, switchMap, timer} from 'rxjs';
+import {JsonPipe} from '@angular/common';
+import {CodePresenter} from '@components/code-presenter/code-presenter';
 
 const INTERVAL_TIME = 1000;
 
@@ -33,7 +33,7 @@ export class DemoPollingByList {
         if (!shouldPolling) return of([]);
         // if (!shouldPolling) return EMPTY;
 
-        return interval(INTERVAL_TIME).pipe(
+        return timer(0, INTERVAL_TIME).pipe(
           switchMap(() => this.fetchDataByListItem(this.listItem())), // get the newest value of listItem()
         );
       }),
