@@ -10,8 +10,13 @@ import { CodePresenter } from '@components/code-presenter/code-presenter';
 })
 export class DemoSwitchMap {
   protected showExplainSubscribeHell = signal<boolean>(false);
+  protected showSwitchMapSolution = signal<boolean>(false);
 
   protected triggerExplainSubscribeHell() {
     this.showExplainSubscribeHell.set(true);
+  }
+
+  protected triggerSwitchMapSolution() {
+    this.showSwitchMapSolution.set(true);
   }
 }

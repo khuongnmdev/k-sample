@@ -5,13 +5,13 @@ export interface MenuItem {
 
 export const MenuItemEnum = {
   Home: 'Home',
-  About: 'About',
   DemoChangeDetection: 'Demo Change Detection',
   ExplainReactiveImperative: 'Imperative vs Reactive',
-  DemoSwitchMap: 'Explain Switch Map',
-  DemoCatchError: 'Explain Catch Error',
-  DemoPolling: 'Demo Polling ',
+  DemoSwitchMap: 'Subscribe Hell → switchMap',
+  DemoCatchError: 'CatchError Operator',
+  DemoPolling: 'Demo Polling',
   DemoPollingByList: 'Demo Polling By List',
-  DemoBasicMulticast: 'Demo Basic Multicast',
-  DemoBestPracticeService: 'Best Practice Service',
+  DemoBasicMulticast: 'Unicast vs Multicast',
+  DemoBestPracticeService: 'Service Best Practices',
+  Summary: 'Key Takeaways',
 };

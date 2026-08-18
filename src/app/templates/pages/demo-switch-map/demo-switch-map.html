@@ -8,22 +8,24 @@
   <code>subscribe()</code> vào nhau. Đây chính là nguyên nhân dẫn đến <b>Subscribe Hell</b>.
 </p>
 
-<app-code-presenter-signal fileName="demo-switch-map/subscrible-hell.ts">
+<app-code-presenter-signal fileName="demo-switch-map/subscribe-hell.ts">
 </app-code-presenter-signal>
 
 <hr />
 
 @if (this.showExplainSubscribeHell()) {
-  <app-code-presenter-signal [fileName]="'explain-subscrible-hell.md'"></app-code-presenter-signal>
+  <app-code-presenter-signal [fileName]="'explain-subscribe-hell.md'"></app-code-presenter-signal>
 } @else {
   <button class="btn" (click)="triggerExplainSubscribeHell()">Explain Subscribe Hell</button>
 }
 
 <hr />
-@if (this.showExplainSubscribeHell()) {
+@if (this.showSwitchMapSolution()) {
   <app-code-presenter-signal fileName="demo-switch-map/switch-map.ts"> </app-code-presenter-signal>
 
   <hr />
 
   <app-code-presenter-signal [fileName]="'explain-switch-map.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerSwitchMapSolution()">Reveal Solution: switchMap</button>
 }

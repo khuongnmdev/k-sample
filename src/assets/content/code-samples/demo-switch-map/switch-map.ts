@@ -1,4 +1,5 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {UserService} from '@services/user.service';
 import {ProductService} from '@services/product.service';
 import {filter, switchMap, EMPTY} from 'rxjs';
@@ -11,22 +12,24 @@ import {filter, switchMap, EMPTY} from 'rxjs';
 export class ExampleSwitchMapComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly productService = inject(ProductService);
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     // Chỉ dùng DUY NHẤT 1 hàm subscribe ở cuối cùng
     this.userService.isLoggedIn$
       .pipe(
-        filter((isLoggedIn) => !!isLoggedIn), // Filter: Chỉ cho đi tiếp phần bên dưới nếu đã login
-        // 2. Khi đã chắc chắn logged in, bẻ lái sang lấy Profile
-        switchMap(() => this.userService.userProfile$),
-        // 3. Lọc tiếp: Đảm bảo có profile data
+        // 1. Bẻ lái tầng 1: đã login thì chuyển sang luồng Profile,
+        //    chưa login thì trả về EMPTY - ngắt luồng, không gì chạy xuống dưới
+        switchMap((isLoggedIn) => (isLoggedIn ? this.userService.userProfile$ : EMPTY)),
+        // 2. Cổng chắn: chỉ cho đi tiếp khi đã thực sự có dữ liệu profile
         filter((profile) => !!profile),
-        // 4. Bẻ lái sang API lấy danh sách sản phẩm
+        // 3. Bẻ lái tầng 2: dùng mã code của Profile gọi API lấy danh sách Sản phẩm
         switchMap((profile) => {
           console.log('2. Đã có Profile, Mã code:', profile.code);
-          // Tiếp tục bẻ lái luồng gọi sang API lấy danh sách Sản phẩm dựa vào code
           return this.productService.getProductByUserId(profile.code);
         }),
+        // 4. Tự hủy subscription khi component destroy - chặn Memory Leak
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((products) => {
         // Kết quả trả về cuối cùng là từ hàm getProductByUserId
