@@ -2,7 +2,7 @@
 
 | API                | Chiều                 | Vai trò                                                                                                                                         |
 | :----------------- | :-------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`toSignal()`**   | Observable → Signal   | "Hạ cánh" stream về cho template: đọc trực tiếp `value()`, không cần `async` pipe, tự unsubscribe khi injector destroy. Options: `initialValue`, `requireSync`. |
+| **`toSignal()`**   | Observable → Signal   | "Hạ cánh" stream về cho template: gọi thẳng signal (ví dụ `results()`), không cần `async` pipe, tự unsubscribe khi injector destroy. Options: `initialValue`, `requireSync`. |
 | **`toObservable()`** | Signal → Observable | "Cất cánh" signal vào pipeline RxJS: mỗi lần signal đổi giá trị là một emission (phát bất đồng bộ, gộp theo nhịp) - từ đó dùng được mọi operator. |
 
 ---

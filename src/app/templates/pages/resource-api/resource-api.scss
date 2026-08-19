@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.highlight {
+  font-weight: bold;
+  color: red;
+}
+
+.btn + .btn {
+  margin-left: 0.5rem;
+}

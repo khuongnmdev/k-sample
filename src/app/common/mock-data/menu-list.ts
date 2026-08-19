@@ -14,6 +14,22 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/explain-reactive-vs-imperative',
   },
   {
+    name: MenuItemEnum.CorePrimitives,
+    link: '/core-primitives',
+  },
+  {
+    name: MenuItemEnum.SignalComponents,
+    link: '/signal-components',
+  },
+  {
+    name: MenuItemEnum.RxjsInterop,
+    link: '/rxjs-interop',
+  },
+  {
+    name: MenuItemEnum.ResourceApi,
+    link: '/resource-api',
+  },
+  {
     name: MenuItemEnum.DemoSwitchMap,
     link: '/demo-switch-map',
   },
@@ -32,18 +48,6 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
   {
     name: MenuItemEnum.DemoBasicMulticast,
     link: '/demo-multicast',
-  },
-  {
-    name: MenuItemEnum.CorePrimitives,
-    link: '/core-primitives',
-  },
-  {
-    name: MenuItemEnum.SignalComponents,
-    link: '/signal-components',
-  },
-  {
-    name: MenuItemEnum.RxjsInterop,
-    link: '/rxjs-interop',
   },
   {
     name: MenuItemEnum.DemoBestPracticeService,

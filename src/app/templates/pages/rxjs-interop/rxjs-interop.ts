@@ -28,11 +28,14 @@ export class RxjsInterop {
 
   // 2. toObservable: Signal -> Observable, để dùng các operator "thời gian"
   //    mà thế giới Signal không có (debounce, distinct, switchMap...)
-  private readonly results$ = toObservable(this.searchTerm).pipe(
-    debounceTime(300),
-    distinctUntilChanged(),
-    switchMap((term) => this.fakeSearchApi(term)),
-  );
+  //    (SSR: không dựng pipeline để timer của debounce không kéo chậm prerender)
+  private readonly results$ = this.isBrowser
+    ? toObservable(this.searchTerm).pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => this.fakeSearchApi(term)),
+      )
+    : of([] as string[]);
 
   // 3. toSignal: Observable -> Signal, template đọc trực tiếp results()
   protected readonly results = toSignal(this.results$, {initialValue: [] as string[]});
@@ -42,8 +45,8 @@ export class RxjsInterop {
   }
 
   private fakeSearchApi(term: string) {
-    // Chuỗi rỗng (hoặc SSR): không "gọi API"
-    if (!term.trim() || !this.isBrowser) {
+    // Chuỗi rỗng: không "gọi API"
+    if (!term.trim()) {
       return of([] as string[]);
     }
     this.searchCallCount.update((count) => count + 1);

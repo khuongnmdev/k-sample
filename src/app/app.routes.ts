@@ -13,6 +13,7 @@ import {Summary} from '@pages/summary/summary';
 import {CorePrimitives} from '@pages/core-primitives/core-primitives';
 import {SignalComponents} from '@pages/signal-components/signal-components';
 import {RxjsInterop} from '@pages/rxjs-interop/rxjs-interop';
+import {ResourceApi} from '@pages/resource-api/resource-api';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,10 @@ export const routes: Routes = [
   {
     path: 'rxjs-interop',
     component: RxjsInterop,
+  },
+  {
+    path: 'resource-api',
+    component: ResourceApi,
   },
   {
     path: 'best-practice-service',

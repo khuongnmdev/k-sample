@@ -1,0 +1,72 @@
+<h3>Resource APIs: resource - rxResource - httpResource</h3>
+
+<hr />
+
+<p>
+  <b>resource()</b> biến "dữ liệu bất đồng bộ" thành một nhóm signal gói sẵn: <code>value()</code>,
+  <code>status()</code>, <code>error()</code>, <code>isLoading()</code> - kèm
+  <code>reload()</code> và tự <b>hủy request cũ</b> khi params đổi. Demo: đổi user để loader tự chạy
+  lại, thử id không tồn tại để thấy trạng thái error.
+  <br />
+  <em>⚠️ Nhóm API này vẫn đang ở trạng thái experimental (tính đến Angular 21).</em>
+</p>
+
+<button class="btn" (click)="selectUser(1)">User 1</button>
+<button class="btn" (click)="selectUser(2)">User 2</button>
+<button class="btn" (click)="selectUser(3)">User 3</button>
+<button class="btn" (click)="selectUser(404)">User 404 (lỗi)</button>
+<button class="btn" (click)="reload()">reload()</button>
+
+<p>
+  status(): <span class="highlight">{{ user.status() }}</span> - isLoading():
+  <span class="highlight">{{ user.isLoading() }}</span>
+</p>
+@if (user.isLoading()) {
+  <p>
+    <em>Đang tải user {{ userId() }}...</em>
+  </p>
+} @else if (user.error()) {
+  <p class="highlight">error(): {{ user.error()?.message }}</p>
+} @else if (user.hasValue()) {
+  <p>
+    value(): user <b>{{ user.value().name }}</b> - mã code <b>{{ user.value().code }}</b>
+  </p>
+}
+
+<hr />
+
+<app-code-presenter-signal fileName="resource-api/resource-user.ts"> </app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplainResource()) {
+  <app-code-presenter-signal fileName="resource-api/resource-cheatsheet.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal fileName="resource-api/http-resource-example.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal [fileName]="'explain-resource-api.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerExplainResource()">
+    Explain: resource vs rxResource vs httpResource
+  </button>
+}
+
+<hr />
+@if (this.showResourceNotes()) {
+  <app-code-presenter-signal fileName="resource-api/resource-lifecycle.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal [fileName]="'explain-resource-notes.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerResourceNotes()">
+    Reveal: Vòng đời status & những điều cần lưu ý
+  </button>
+}

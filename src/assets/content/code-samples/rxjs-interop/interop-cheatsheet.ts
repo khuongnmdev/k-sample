@@ -1,31 +1,42 @@
-// ===== toSignal: Observable -> Signal =====
+import {Component, inject, signal} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {toObservable, toSignal} from '@angular/core/rxjs-interop';
+import {debounceTime, switchMap} from 'rxjs';
 
-// Cơ bản: chưa có giá trị thì signal trả undefined
-readonly user = toSignal(this.userService.user$);
-// -> Signal<User | undefined>
+@Component({selector: 'app-interop-cheatsheet', template: '...', standalone: true})
+export class InteropCheatsheet {
+  private readonly http = inject(HttpClient);
+  private readonly userService = inject(UserService);
 
-// initialValue: có giá trị ngay từ đầu, template không phải xử lý undefined
-readonly products = toSignal(this.productService.products$, {initialValue: []});
-// -> Signal<Product[]>
+  // ===== toSignal: Observable -> Signal =====
 
-// requireSync: nguồn phát ĐỒNG BỘ ngay khi subscribe (BehaviorSubject,
-// stream có startWith/shareReplay...) - không cần initialValue,
-// nhưng sẽ THROW nếu nguồn không phát ngay
-readonly theme = toSignal(this.themeSubject$, {requireSync: true});
-// -> Signal<Theme>
+  // Cơ bản: chưa có giá trị thì signal trả undefined
+  readonly user = toSignal(this.userService.user$);
+  // -> Signal<User | undefined>
 
-// ===== toObservable: Signal -> Observable =====
+  // initialValue: có giá trị ngay từ đầu, template không phải xử lý undefined
+  readonly products = toSignal(this.http.get<Product[]>('/api/products'), {initialValue: []});
+  // -> Signal<Product[]>
 
-readonly query = signal('');
+  // requireSync: nguồn phát ĐỒNG BỘ ngay khi subscribe
+  // (BehaviorSubject, stream có startWith...) - không cần initialValue,
+  // nhưng sẽ THROW nếu nguồn không phát ngay lập tức
+  readonly theme = toSignal(this.userService.themeSubject$, {requireSync: true});
+  // -> Signal<Theme>
 
-// Đưa signal vào pipeline RxJS để dùng operator thời gian / điều phối
-readonly suggestions$ = toObservable(this.query).pipe(
-  debounceTime(300),
-  switchMap((q) => this.api.suggest(q)),
-);
+  // ===== toObservable: Signal -> Observable =====
 
-// Ghi chú: cả toSignal lẫn toObservable đều cần INJECTION CONTEXT
-// (khai báo ở field/constructor), hoặc truyền {injector} khi gọi ở nơi khác.
+  readonly query = signal('');
 
-// Pattern "cây cầu khứ hồi" - chính CodePresenter của app này đang dùng:
-// input signal -> computed(fileInfo) -> toObservable -> switchMap(HTTP) -> toSignal
+  // Đưa signal vào pipeline RxJS để dùng operator thời gian / điều phối
+  readonly suggestions$ = toObservable(this.query).pipe(
+    debounceTime(300),
+    switchMap((q) => this.http.get<string[]>(`/api/suggest?q=${q}`)),
+  );
+
+  // Ghi chú: cả toSignal lẫn toObservable đều cần INJECTION CONTEXT
+  // (khai báo ở field/constructor như trên), hoặc truyền {injector} khi gọi ở nơi khác.
+
+  // Pattern "cây cầu khứ hồi" - chính CodePresenter của app này đang dùng:
+  // input signal -> computed(fileInfo) -> toObservable -> switchMap(HTTP) -> toSignal
+}
