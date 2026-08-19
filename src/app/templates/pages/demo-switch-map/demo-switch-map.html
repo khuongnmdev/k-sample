@@ -29,3 +29,37 @@
 } @else {
   <button class="btn" (click)="triggerSwitchMapSolution()">Reveal Solution: switchMap</button>
 }
+
+<hr />
+
+<h4>Live demo: switchMap tự hủy request cũ (swapi.info)</h4>
+<p>
+  Bấm liên tiếp Person 1 → 2 → 3 thật nhanh rồi so sánh 2 log bên dưới.
+  <br />
+  <b>Naive</b> (mỗi click một subscribe độc lập): mọi response đều đổ về, kết quả bị đè nhiều lần.
+  <br />
+  <b>switchMap</b>: chỉ response của lần bấm CUỐI được nhận - request trước bị hủy (✖).
+  <br />
+  Response bị interceptor delay 1.2s - bấm nhanh hơn nhịp đó sẽ thấy request cancelled trong
+  <b>Network tab</b>.
+</p>
+
+<button class="btn" (click)="pick(1)">Person 1</button>
+<button class="btn" (click)="pick(2)">Person 2</button>
+<button class="btn" (click)="pick(3)">Person 3</button>
+<button class="btn" (click)="resetRace()">Reset</button>
+
+<p>Naive - kết quả: <span class="highlight">{{ naiveResult() }}</span></p>
+@for (line of naiveLog(); track $index) {
+  <p>{{ line }}</p>
+}
+
+<p>switchMap - kết quả: <span class="highlight">{{ switchResult() }}</span></p>
+@for (line of switchLog(); track $index) {
+  <p>{{ line }}</p>
+}
+
+<hr />
+
+<app-code-presenter-signal fileName="demo-switch-map/switch-map-cancel.ts">
+</app-code-presenter-signal>

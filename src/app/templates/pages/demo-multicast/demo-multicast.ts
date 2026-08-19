@@ -1,8 +1,9 @@
 import {ChangeDetectionStrategy, Component, DestroyRef, inject, signal} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {interval, Subscription} from 'rxjs';
+import {defer, interval, Subscription} from 'rxjs';
 import {share, tap} from 'rxjs/operators';
 import {CodePresenter} from '@components/code-presenter/code-presenter';
+import {SwapiService} from '@services/swapi.service';
 
 @Component({
   selector: 'app-demo-multicast',
@@ -140,5 +141,53 @@ export class DemoMulticast {
     this.multicastValuesA.set([]);
     this.multicastValuesB.set([]);
     this.multicastSideEffects.set(0);
+  }
+
+  // --- HTTP THẬT (swapi.info): request trùng lặp vs share() ---
+  private readonly swapi = inject(SwapiService);
+
+  protected readonly httpResultA = signal<string>('');
+  protected readonly httpResultB = signal<string>('');
+  protected readonly httpRequestLog = signal<string[]>([]);
+
+  private nextPersonId = 1;
+
+  // defer: log đúng tại thời điểm request thật được tạo (cold: mỗi subscribe một lần)
+  private trackedPerson$(id: number) {
+    return defer(() => {
+      this.httpRequestLog.update((log) => [...log, `→ HTTP request /people/${id}`]);
+      return this.swapi.getPerson(id);
+    });
+  }
+
+  protected loadWithoutShare() {
+    // Cold, không share: 2 lượt subscribe = 2 request giống hệt nhau
+    const source$ = this.trackedPerson$(this.rotatePersonId());
+    this.httpResultA.set('đang tải...');
+    this.httpResultB.set('đang tải...');
+    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p) => this.httpResultA.set(p.name));
+    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p) => this.httpResultB.set(p.name));
+  }
+
+  protected loadWithShare() {
+    // share(): B bám vào request đang bay của A - chỉ 1 request duy nhất
+    const source$ = this.trackedPerson$(this.rotatePersonId()).pipe(share());
+    this.httpResultA.set('đang tải...');
+    this.httpResultB.set('đang tải...');
+    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p) => this.httpResultA.set(p.name));
+    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p) => this.httpResultB.set(p.name));
+  }
+
+  protected resetHttp() {
+    this.httpResultA.set('');
+    this.httpResultB.set('');
+    this.httpRequestLog.set([]);
+  }
+
+  // Đổi id mỗi lần bấm để browser HTTP cache không làm sai lệch số request
+  private rotatePersonId() {
+    const id = this.nextPersonId;
+    this.nextPersonId = (this.nextPersonId % 3) + 1;
+    return id;
   }
 }

@@ -1,35 +1,36 @@
 import { ChangeDetectionStrategy, Component, inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { AsyncPipe } from '@angular/common';
-import { defer, delay, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
-interface User {
-  id: number;
+interface SwapiPerson {
   name: string;
 }
 
 @Injectable({ providedIn: 'root' })
-export class UserService {
-  private requestCount = 0;
+export class SwapiService {
+  private readonly http = inject(HttpClient);
 
-  // Giả lập this.http.get<User>('/api/user') - mất 1s để server phản hồi
-  // Không có share(): Unicast (Cold)
-  readonly user$: Observable<User> = defer(() => {
-    console.log(`Gửi HTTP request lần thứ ${++this.requestCount} tới server...`);
-    return of({ id: 1, name: 'K-Sample' }).pipe(delay(1000));
-  });
+  // Cold Observable: mỗi lượt subscribe = một HTTP request MỚI tới server
+  getPerson(id: number): Observable<SwapiPerson> {
+    return this.http.get<SwapiPerson>(`https://swapi.info/api/people/${id}`);
+  }
 }
 
 @Component({
-  selector: 'app-user-profile',
+  selector: 'app-person-profile',
   imports: [AsyncPipe],
   template: `
-    <!-- 2 async pipe = 2 lượt subscribe => gửi 2 HTTP request TRÙNG LẶP -->
-    <h4>Tên: {{ (userService.user$ | async)?.name }}</h4>
-    <p>ID: {{ (userService.user$ | async)?.id }}</p>
+    <!-- 2 async pipe = 2 lượt subscribe => 2 HTTP request TRÙNG LẶP (xem Network tab) -->
+    <h4>Tên: {{ (person$ | async)?.name }}</h4>
+    <p>Tên lần nữa: {{ (person$ | async)?.name }}</p>
   `,
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserProfile {
-  protected readonly userService = inject(UserService);
+export class PersonProfile {
+  private readonly swapi = inject(SwapiService);
+
+  // Không có share(): Unicast (Cold)
+  readonly person$ = this.swapi.getPerson(1);
 }

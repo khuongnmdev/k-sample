@@ -19,3 +19,28 @@
 } @else {
   <button class="btn" (click)="triggerExplainCatchError()">Explain Catch Error</button>
 }
+
+<hr />
+
+<h4>Live demo: catchError với lỗi 404 thật (swapi.info)</h4>
+<p>
+  Person 9999 không tồn tại - server trả <b>HTTP 404 thật</b> (xem Network tab).
+  <br />
+  <code>catchError</code> đặt Ở TRONG <code>switchMap</code> nên lỗi chỉ kết thúc luồng con.
+  <br />
+  Thử: bấm Person 9999 (lỗi) rồi bấm lại Person 1 - luồng chính vẫn sống, không cần subscribe lại.
+</p>
+
+<button class="btn" (click)="load(1)">Person 1 (OK)</button>
+<button class="btn" (click)="load(9999)">Person 9999 (404)</button>
+<button class="btn" (click)="resetDemo()">Reset</button>
+
+<p>Kết quả: <span class="highlight">{{ result() }}</span></p>
+@for (line of log(); track $index) {
+  <p>{{ line }}</p>
+}
+
+<hr />
+
+<app-code-presenter-signal fileName="demo-catch-error/catch-error-live.ts">
+</app-code-presenter-signal>

@@ -39,6 +39,43 @@
 
 <hr />
 
+<h4>httpResource với API thật (swapi.info)</h4>
+<p>
+  Cùng pattern nhưng gọi <b>HTTP thật</b>: <code>httpResource</code> nhận một hàm URL reactive.
+  <br />
+  <code>personId</code> đổi: request mới tự bắn, request cũ tự hủy - mở <b>Network tab</b> để xem.
+  <br />
+  Response bị interceptor delay thêm 1.2s để loading state kịp hiển thị (swapi thật chỉ ~150ms).
+  <br />
+  Person 9999 không tồn tại: server trả <b>404 thật</b>, đọc được qua <code>statusCode()</code>.
+</p>
+
+<button class="btn" (click)="selectPerson(1)">Person 1</button>
+<button class="btn" (click)="selectPerson(2)">Person 2</button>
+<button class="btn" (click)="selectPerson(3)">Person 3</button>
+<button class="btn" (click)="selectPerson(9999)">Person 9999 (404)</button>
+<button class="btn" (click)="person.reload()">reload()</button>
+
+<p>
+  status(): <span class="highlight">{{ person.status() }}</span> - isLoading():
+  <span class="highlight">{{ person.isLoading() }}</span> - statusCode():
+  <span class="highlight">{{ person.statusCode() }}</span>
+</p>
+@if (person.isLoading()) {
+  <p>
+    <em>Đang tải person {{ personId() }} từ swapi.info...</em>
+  </p>
+} @else if (person.error()) {
+  <p class="highlight">error(): HTTP {{ person.statusCode() }} - person {{ personId() }} không tồn tại</p>
+} @else if (person.hasValue()) {
+  <p>
+    value(): <b>{{ person.value().name }}</b> - sinh năm <b>{{ person.value().birth_year }}</b> -
+    giới tính <b>{{ person.value().gender }}</b>
+  </p>
+}
+
+<hr />
+
 @if (this.showExplainResource()) {
   <app-code-presenter-signal fileName="resource-api/resource-cheatsheet.ts">
   </app-code-presenter-signal>

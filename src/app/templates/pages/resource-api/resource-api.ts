@@ -7,7 +7,9 @@ import {
   signal,
 } from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
+import {httpResource} from '@angular/common/http';
 import {CodePresenter} from '@components/code-presenter/code-presenter';
+import {SWAPI_BASE_URL, SwapiPerson} from '@services/swapi.service';
 
 interface DemoUser {
   name: string;
@@ -44,6 +46,19 @@ export class ResourceApi {
     params: () => this.userId(),
     loader: ({params: id, abortSignal}) => this.fetchUser(id, abortSignal),
   });
+
+  // ===== httpResource với API THẬT (swapi.info) =====
+  protected readonly personId = signal(1);
+
+  // URL là hàm reactive: personId đổi -> request MỚI tự bắn, request cũ tự hủy.
+  // Trả về undefined lúc SSR/prerender -> resource ở trạng thái idle, không gọi API lúc build.
+  protected readonly person = httpResource<SwapiPerson>(() =>
+    this.isBrowser ? `${SWAPI_BASE_URL}/people/${this.personId()}` : undefined,
+  );
+
+  protected selectPerson(id: number) {
+    this.personId.set(id);
+  }
 
   protected selectUser(id: number) {
     this.userId.set(id);

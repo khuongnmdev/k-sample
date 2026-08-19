@@ -143,6 +143,30 @@
 
 <hr />
 
+<h4>3. HTTP thật: request trùng lặp vs share()</h4>
+<p>
+  Cùng một lượt "2 subscribers cùng subscribe" vào một HTTP request thật (swapi.info).
+  <br />
+  Mở <b>DevTools Network tab</b> (filter: <code>people</code>) rồi bấm từng nút để so sánh.
+  <br />
+  Không có <code>share()</code>: 2 request giống hệt nhau bắn lên server.
+  <br />
+  Có <code>share()</code>: subscriber B bám vào request đang bay của A - chỉ 1 request duy nhất.
+</p>
+
+<button class="btn" (click)="loadWithoutShare()">Load KHÔNG share (2 subscribers)</button>
+<button class="btn" (click)="loadWithShare()">Load CÓ share (2 subscribers)</button>
+<button class="btn" (click)="resetHttp()">Reset</button>
+
+<p>Subscriber A nhận: <span class="highlight">{{ httpResultA() }}</span></p>
+<p>Subscriber B nhận: <span class="highlight">{{ httpResultB() }}</span></p>
+
+@for (line of httpRequestLog(); track $index) {
+  <p>{{ line }}</p>
+}
+
+<hr />
+
 <h4>Code Samples</h4>
 
 <div class="code-samples-grid">
