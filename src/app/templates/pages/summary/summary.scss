@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+
+  h3 {
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+  }
+}

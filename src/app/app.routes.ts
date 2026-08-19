@@ -9,6 +9,7 @@ import {DemoCatchError} from '@pages/catch-error-operator/demo-catch-error';
 import {BestPracticeService} from '@pages/best-practice-service/best-practice-service';
 import {ExplainReactiveImperative} from '@pages/explain-reactive-imperative/explain-reactive-imperative';
 import {DemoMulticast} from '@pages/demo-multicast/demo-multicast';
+import {Summary} from '@pages/summary/summary';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,10 @@ export const routes: Routes = [
   {
     path: 'demo-multicast',
     component: DemoMulticast,
+  },
+  {
+    path: 'summary',
+    component: Summary,
   },
   {
     path: '',

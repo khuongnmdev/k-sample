@@ -79,6 +79,7 @@ export class GlobalDialogService {
 
 - **Service:** Thiết kế "đường ống" dẫn nước (Observable) và các bộ lọc (Operators). Service không biết khi nào giao diện cần dữ liệu, nên nó chỉ cung cấp "khả năng lấy dữ liệu".
 - **Component:** Là người "mở vòi" (Subscribe). Component quản lý vòng đời của chính nó, nên nó biết khi nào cần dừng lấy dữ liệu để tránh Memory Leak.
+- **Mẹo từ bài Multicast:** Nếu stream trong Service được nhiều component cùng subscribe (config, danh mục, user profile...), hãy gắn `share()` / `shareReplay(1)` ngay trong Service — mỗi component cứ "mở vòi" bình thường nhưng server chỉ nhận đúng **1** request.
 
 ---
 

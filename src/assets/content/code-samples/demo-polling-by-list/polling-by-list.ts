@@ -42,7 +42,7 @@ export class DemoPollingByList {
     });
 
   private fetchDataByListItem(listItem: number[]): Observable<string[]> {
-    const result = listItem.map((value) => `Result for ID: ${value}`);
+    const result = listItem.map((value) => `Result for ${value}`);
     return of(result);
   }
 

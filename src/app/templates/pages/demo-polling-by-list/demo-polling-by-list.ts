@@ -1,7 +1,14 @@
-import {ChangeDetectionStrategy, Component, DestroyRef, inject, signal} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
+import {isPlatformBrowser, JsonPipe} from '@angular/common';
 import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
 import {EMPTY, map, Observable, of, switchMap, timer} from 'rxjs';
-import {JsonPipe} from '@angular/common';
 import {CodePresenter} from '@components/code-presenter/code-presenter';
 
 const INTERVAL_TIME = 1000;
@@ -16,6 +23,7 @@ const INTERVAL_TIME = 1000;
 })
 export class DemoPollingByList {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   protected showExplainPollingByList = signal<boolean>(false);
 
   protected triggerExplainPollingByList() {
@@ -26,31 +34,41 @@ export class DemoPollingByList {
 
   public readonly result = signal<string[]>([]);
 
-  private readonly pollingSubscription = toObservable(this.listItem)
-    .pipe(
-      map((list) => !!list.length), // convert number[] to boolean
-      switchMap((shouldPolling) => {
-        if (!shouldPolling) return of([]);
-        // if (!shouldPolling) return EMPTY;
+  constructor() {
+    // SSR/Prerender: don't start polling on the server - the demo is browser-only
+    // and its console.logs would leak into the server/terminal output
+    if (this.isBrowser) {
+      this.startPolling();
+    }
+  }
 
-        return timer(0, INTERVAL_TIME).pipe(
-          switchMap(() => this.fetchDataByListItem(this.listItem())), // get the newest value of listItem()
-        );
-      }),
-      takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe({
-      next: (data) => {
-        this.result.set(data);
-        console.log('subscribe Result:', data);
-      },
-      error: (error) => {
-        console.log('subscribe Error:', error);
-      },
-      complete: () => {
-        console.log('subscribe Complete');
-      },
-    });
+  private startPolling() {
+    toObservable(this.listItem)
+      .pipe(
+        map((list) => !!list.length), // convert number[] to boolean
+        switchMap((shouldPolling) => {
+          if (!shouldPolling) return of([]);
+          // if (!shouldPolling) return EMPTY;
+
+          return timer(0, INTERVAL_TIME).pipe(
+            switchMap(() => this.fetchDataByListItem(this.listItem())), // get the newest value of listItem()
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (data) => {
+          this.result.set(data);
+          console.log('subscribe Result:', data);
+        },
+        error: (error) => {
+          console.log('subscribe Error:', error);
+        },
+        complete: () => {
+          console.log('subscribe Complete');
+        },
+      });
+  }
 
   private fetchDataByListItem(listItem: number[]): Observable<string[]> {
     const result = listItem.map((value) => `Result for ${value}`);

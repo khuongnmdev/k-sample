@@ -18,18 +18,21 @@ Mặc định, hầu hết Observable trong RxJS là **Unicast** (còn gọi là
 
 ### 2. Multicast Observable (`share()`)
 
-**Multicast** (còn gọi là **Hot Observable**) phân phối dữ liệu từ một phiên thực thi (execution) duy nhất tới nhiều Subscriber cùng lúc.
+**Multicast** phân phối dữ liệu từ một phiên thực thi (execution) duy nhất tới nhiều Subscriber cùng lúc.
 
 - **Cách hoạt động**: Khi Subscriber đầu tiên đăng ký, Observable nguồn bắt đầu chạy. Các Subscriber đăng ký sau sẽ **cùng lắng nghe và chia sẻ chung phiên thực thi đang chạy đó**.
 - **Đặc điểm**:
   - Các Subscriber nhận được giá trị giống hệt nhau tại cùng thời điểm.
   - Side-effects chỉ **chạy duy nhất 1 lần**, bất kể có bao nhiêu Subscriber.
-  - Subscriber đăng ký muộn sẽ **không nhận lại** các giá trị đã phát ra trước đó (chỉ nhận từ thời điểm subscribe trở đi).
+  - Subscriber đăng ký muộn sẽ **không nhận lại** các giá trị đã phát ra trước đó, chỉ nhận từ thời điểm subscribe trở đi (muốn phát lại giá trị gần nhất cho người đến muộn, dùng `shareReplay()`).
   - Kích hoạt đơn giản bằng cách gắn toán tử `.pipe(share())`.
+  - Vì vẫn "chờ" Subscriber đầu tiên rồi mới chạy và tự reset khi hết Subscriber (cơ chế refCount), stream tạo bởi `share()` thường được gọi là **"warm"** - nằm giữa Cold và Hot thuần túy.
 
 ---
 
 ### 3. Nhận biết Cold / Hot Observable trong thực tế
+
+> Lưu ý phân biệt **hai trục khái niệm khác nhau**: _Unicast/Multicast_ nói về việc **bao nhiêu Subscriber chia sẻ một execution**, còn _Cold/Hot_ nói về việc **producer nằm trong hay ngoài Observable**. Hai trục này thường đi đôi với nhau (Cold ↔ Unicast, Hot ↔ Multicast) nhưng không phải là một.
 
 **Cold (Unicast)** - dữ liệu được "sản xuất" bên trong Observable, chỉ bắt đầu chạy khi có người subscribe:
 
@@ -41,11 +44,11 @@ Mặc định, hầu hết Observable trong RxJS là **Unicast** (còn gọi là
 **Hot (Multicast)** - dữ liệu được "sản xuất" từ nguồn bên ngoài, phát ra bất kể có ai lắng nghe hay không:
 
 - `fromEvent(...)` - sự kiện DOM (click, scroll, keyup...)
-- `Subject`, `BehaviorSubject`, `ReplaySubject`
+- `Subject`, `BehaviorSubject`, `ReplaySubject` (lưu ý: khác với `share()`, hai loại `BehaviorSubject`/`ReplaySubject` **có** phát lại giá trị đã lưu cho Subscriber đến muộn)
 - `FormControl.valueChanges`, `Router.events` trong Angular
-- `webSocket(...)` - luồng dữ liệu real-time từ server
+- `webSocket(...)` - luồng real-time từ server, multicast qua Subject nội bộ (kết nối chỉ được mở khi có Subscriber đầu tiên)
 
-> Lưu ý: một Cold Observable có thể được "hâm nóng" thành Hot bằng cách gắn `share()` / `shareReplay()`.
+> Lưu ý: một Cold Observable có thể được chuyển thành Multicast ("warm" - xem ghi chú ở mục 2) bằng cách gắn `share()` / `shareReplay()`.
 
 ---
 
@@ -67,3 +70,5 @@ Khi bạn có một dữ liệu cấu hình hệ thống (ví dụ: danh sách C
 
 - **Unicast**: cả 3 component cùng subscribe vào luồng HTTP gốc → **3 requests gửi lên server**.
 - **Multicast**: sử dụng `shareReplay(1)` → chỉ **1 request duy nhất** gửi lên server, 3 component cùng chia sẻ kết quả tức thì.
+
+> 👉 Đây cũng là cầu nối sang trang **Service Best Practices**: khi một Service cung cấp stream dùng chung cho nhiều component, hãy gắn `share()` / `shareReplay(1)` ngay trong Service để cả app chỉ trả chi phí side-effect đúng một lần.

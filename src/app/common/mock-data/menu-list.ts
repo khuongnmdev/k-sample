@@ -37,4 +37,8 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     name: MenuItemEnum.DemoBestPracticeService,
     link: '/best-practice-service',
   },
+  {
+    name: MenuItemEnum.Summary,
+    link: '/summary',
+  },
 ];

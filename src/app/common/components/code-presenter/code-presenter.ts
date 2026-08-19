@@ -78,8 +78,10 @@ export class CodePresenter implements DoCheck {
     }),
   );
 
+  // Empty initial value so the template's @else branch shows the loading skeleton
+  // (a truthy placeholder would render as raw text and the skeleton would never appear)
   public readonly codeMarkdown: Signal<string | undefined> = toSignal(this.codeMarkdown$, {
     injector: this.injector,
-    initialValue: 'Loading code...',
+    initialValue: '',
   });
 }

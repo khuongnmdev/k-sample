@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserService } from '@services/user.service';
 import { ProductService } from '@services/product.service';
 import { filter, switchMap, EMPTY, catchError, of } from 'rxjs';
@@ -11,6 +12,7 @@ import { filter, switchMap, EMPTY, catchError, of } from 'rxjs';
 export class ExampleCatchErrorComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly productService = inject(ProductService);
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     console.log('Bắt đầu quy trình xử lý lỗi với CatchError...');
@@ -51,6 +53,8 @@ export class ExampleCatchErrorComponent implements OnInit {
           console.error('🚨 Lỗi Global (affect cả luồng):', globalErr);
           return of([]);
         }),
+        // Tự hủy subscription khi component destroy - chặn Memory Leak
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (products) => {
