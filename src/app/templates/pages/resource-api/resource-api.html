@@ -43,9 +43,10 @@
 <p>
   Cùng pattern nhưng gọi <b>HTTP thật</b>: <code>httpResource</code> nhận một hàm URL reactive.
   <br />
-  <code>personId</code> đổi: request mới tự bắn, request cũ tự hủy - mở <b>Network tab</b> để xem.
+  <code>personId</code> đổi: request cũ bị hủy ngay khi còn chờ trong interceptor - bấm nhanh,
+  <b>Network tab</b> chỉ thấy request của lần bấm cuối.
   <br />
-  Response bị interceptor delay thêm 1.2s để loading state kịp hiển thị (swapi thật chỉ ~150ms).
+  Interceptor giữ mỗi request 1.2s trước khi gửi để loading state kịp hiển thị (swapi thật chỉ ~150ms).
   <br />
   Person 9999 không tồn tại: server trả <b>404 thật</b>, đọc được qua <code>statusCode()</code>.
 </p>

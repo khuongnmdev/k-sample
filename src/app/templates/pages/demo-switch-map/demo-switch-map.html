@@ -40,8 +40,10 @@
   <br />
   <b>switchMap</b>: chỉ response của lần bấm CUỐI được nhận - request trước bị hủy (✖).
   <br />
-  Response bị interceptor delay 1.2s - bấm nhanh hơn nhịp đó sẽ thấy request cancelled trong
-  <b>Network tab</b>.
+  Interceptor giữ mỗi request 1.2s trước khi bắn - bấm nhanh hơn nhịp đó, request cũ bị hủy
+  TRƯỚC KHI kịp lên mạng.
+  <br />
+  Mở <b>Network tab</b>: naive bắn đủ 3 request, switchMap chỉ để lọt đúng 1 (lần bấm cuối).
 </p>
 
 <button class="btn" (click)="pick(1)">Person 1</button>

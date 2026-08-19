@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, switchMap, tap } from 'rxjs';
+import { EMPTY, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { CodePresenter } from '@components/code-presenter/code-presenter';
 import { SwapiService } from '@services/swapi.service';
 
@@ -25,18 +25,21 @@ export class DemoSwitchMap {
   protected readonly switchLog = signal<string[]>([]);
 
   private readonly pickedId$ = new Subject<number>();
+  private naiveSubs = new Subscription();
 
   private readonly switchSub = this.pickedId$
     .pipe(
-      switchMap((id) =>
-        this.swapi.getPerson(id).pipe(
+      // id = 0: sentinel từ resetRace() - chuyển sang EMPTY để hủy request đang bay
+      switchMap((id) => {
+        if (!id) return EMPTY;
+        return this.swapi.getPerson(id).pipe(
           // unsubscribe: chỉ chạy khi request bị switchMap hủy giữa chừng
           tap({
             unsubscribe: () =>
               this.switchLog.update((l) => [...l, `✖ hủy /people/${id} (bị switch)`]),
           }),
-        ),
-      ),
+        );
+      }),
       takeUntilDestroyed(this.destroyRef),
     )
     .subscribe((p) => {
@@ -48,13 +51,12 @@ export class DemoSwitchMap {
     // Cách naive: mỗi click một subscribe độc lập - không gì bị hủy,
     // mọi response đều đổ về và lần lượt đè kết quả
     this.naiveLog.update((l) => [...l, `→ request /people/${id}`]);
-    this.swapi
-      .getPerson(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((p) => {
+    this.naiveSubs.add(
+      this.swapi.getPerson(id).subscribe((p) => {
         this.naiveResult.set(p.name);
         this.naiveLog.update((l) => [...l, `✔ nhận "${p.name}" (đè kết quả trước)`]);
-      });
+      }),
+    );
 
     // switchMap: mọi click đi qua MỘT stream duy nhất
     this.switchLog.update((l) => [...l, `→ request /people/${id}`]);
@@ -62,10 +64,18 @@ export class DemoSwitchMap {
   }
 
   protected resetRace() {
+    // Hủy hết request đang bay của cả 2 bên trước khi xóa log
+    this.pickedId$.next(0);
+    this.naiveSubs.unsubscribe();
+    this.naiveSubs = new Subscription();
     this.naiveResult.set('');
     this.switchResult.set('');
     this.naiveLog.set([]);
     this.switchLog.set([]);
+  }
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.naiveSubs.unsubscribe());
   }
 
   protected triggerExplainSubscribeHell() {

@@ -17,6 +17,10 @@ export class DemoMulticast {
   private readonly destroyRef = inject(DestroyRef);
   protected showExplainMulticast = signal<boolean>(false);
 
+  constructor() {
+    this.destroyRef.onDestroy(() => this.httpSubs.unsubscribe());
+  }
+
   protected triggerExplainMulticast() {
     this.showExplainMulticast.update((v) => !v);
   }
@@ -151,6 +155,7 @@ export class DemoMulticast {
   protected readonly httpRequestLog = signal<string[]>([]);
 
   private nextPersonId = 1;
+  private httpSubs = new Subscription();
 
   // defer: log đúng tại thời điểm request thật được tạo (cold: mỗi subscribe một lần)
   private trackedPerson$(id: number) {
@@ -162,26 +167,36 @@ export class DemoMulticast {
 
   protected loadWithoutShare() {
     // Cold, không share: 2 lượt subscribe = 2 request giống hệt nhau
+    this.cancelHttpRun(); // hủy lượt trước còn đang bay (nếu có)
     const source$ = this.trackedPerson$(this.rotatePersonId());
     this.httpResultA.set('đang tải...');
     this.httpResultB.set('đang tải...');
-    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p) => this.httpResultA.set(p.name));
-    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p) => this.httpResultB.set(p.name));
+    this.httpSubs.add(source$.subscribe((p) => this.httpResultA.set(p.name)));
+    this.httpSubs.add(source$.subscribe((p) => this.httpResultB.set(p.name)));
   }
 
   protected loadWithShare() {
     // share(): B bám vào request đang bay của A - chỉ 1 request duy nhất
+    this.cancelHttpRun();
     const source$ = this.trackedPerson$(this.rotatePersonId()).pipe(share());
     this.httpResultA.set('đang tải...');
     this.httpResultB.set('đang tải...');
-    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p) => this.httpResultA.set(p.name));
-    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((p) => this.httpResultB.set(p.name));
+    this.httpSubs.add(source$.subscribe((p) => this.httpResultA.set(p.name)));
+    this.httpSubs.add(source$.subscribe((p) => this.httpResultB.set(p.name)));
   }
 
   protected resetHttp() {
+    this.cancelHttpRun();
     this.httpResultA.set('');
     this.httpResultB.set('');
     this.httpRequestLog.set([]);
+  }
+
+  // Gom subscription mỗi lượt bấm để Reset / bấm lại hủy được request đang bay;
+  // component destroy cũng hủy nốt (đăng ký trong constructor)
+  private cancelHttpRun() {
+    this.httpSubs.unsubscribe();
+    this.httpSubs = new Subscription();
   }
 
   // Đổi id mỗi lần bấm để browser HTTP cache không làm sai lệch số request
