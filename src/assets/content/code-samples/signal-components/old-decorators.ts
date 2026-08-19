@@ -1,4 +1,27 @@
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+
 // Cách CŨ: decorator + EventEmitter + phụ thuộc lifecycle
+@Component({
+  selector: 'app-quantity-stepper-old',
+  standalone: true,
+  template: `
+    <b>{{ label }}</b>
+    <button (click)="decrease()">-</button>
+    <span>{{ quantity }}</span>
+    <button #plusBtn (click)="increase()">+</button>
+    <small>(max {{ max }})</small>
+  `,
+})
 export class QuantityStepperOld implements OnChanges, AfterViewInit {
   // @Input: biến thường - KHÔNG reactive.
   // Muốn phản ứng khi cha đổi giá trị phải viết ngOnChanges
@@ -12,8 +35,9 @@ export class QuantityStepperOld implements OnChanges, AfterViewInit {
 
   @Output() reachedMax = new EventEmitter<number>();
 
-  // @ViewChild: undefined cho tới AfterViewInit,
-  // và không tự cập nhật khi element nằm trong @if/@for
+  // @ViewChild: undefined cho tới AfterViewInit, và KHÔNG reactive -
+  // không đọc được trong computed/effect; @ViewChildren muốn biết
+  // danh sách thay đổi phải tự nghe QueryList.changes
   @ViewChild('plusBtn') plusBtn?: ElementRef<HTMLButtonElement>;
 
   ngOnChanges(changes: SimpleChanges) {
@@ -35,5 +59,10 @@ export class QuantityStepperOld implements OnChanges, AfterViewInit {
     }
     this.quantity += 1;
     this.quantityChange.emit(this.quantity); // phải TỰ emit để two-way chạy
+  }
+
+  decrease() {
+    this.quantity = Math.max(1, this.quantity - 1);
+    this.quantityChange.emit(this.quantity);
   }
 }

@@ -17,6 +17,7 @@ Tổng kết lại hành trình từ Change Detection tới Best Practices:
 
 - Khai báo **luồng dữ liệu** ("khi nào thì chạy") thay vì tự tay gán giá trị và tự lo cập nhật UI.
 - `Observable` cho stream/sự kiện bất đồng bộ phức tạp, `Signal` cho state hiển thị - và `toSignal`/`toObservable` làm cầu nối hai thế giới.
+- Pattern "cây cầu khứ hồi": Signal → `toObservable` → operators (debounce, switchMap...) → `toSignal` → template.
 
 ### 4. switchMap thay cho Subscribe lồng nhau
 

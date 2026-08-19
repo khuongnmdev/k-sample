@@ -14,6 +14,7 @@ export const MenuItemEnum = {
   DemoBasicMulticast: 'Unicast vs Multicast',
   CorePrimitives: 'Signal Core Primitives',
   SignalComponents: 'Signal-based Components',
+  RxjsInterop: 'RxJS Interoperability',
   DemoBestPracticeService: 'Service Best Practices',
   Summary: 'Key Takeaways',
 };

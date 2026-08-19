@@ -42,6 +42,10 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/signal-components',
   },
   {
+    name: MenuItemEnum.RxjsInterop,
+    link: '/rxjs-interop',
+  },
+  {
     name: MenuItemEnum.DemoBestPracticeService,
     link: '/best-practice-service',
   },

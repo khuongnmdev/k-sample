@@ -16,5 +16,5 @@ _(Họ hàng đầy đủ: `viewChildren()`, `contentChildren()` trả về sign
 1. **Reactive từ gốc**: input là signal nên compose thẳng vào `computed()` - hết cảnh copy input ra biến rồi đồng bộ bằng `ngOnChanges`.
 2. **Type-safe hơn**: `input.required` báo lỗi **ngay lúc compile** nếu cha quên truyền; query `viewChild.required` hết kiểu `!` hay `?.` rải khắp nơi.
 3. **Two-way binding một dòng**: `model()` gói trọn convention `<name>Change` mà trước đây phải viết tay hai property.
-4. **Hết phụ thuộc lifecycle**: signal query tự resolve, không còn "undefined cho tới AfterViewInit".
+4. **Hết phụ thuộc lifecycle**: đọc query an toàn ở mọi thời điểm - chưa có view thì nhận `undefined` (thay vì phải canh đúng `AfterViewInit`), và vì là signal nên `computed`/`effect` tự chạy lại ngay khi view xuất hiện.
 5. **Hòa vào OnPush/Zoneless**: mọi thay đổi đều là tín hiệu rõ ràng - đúng tinh thần trang Change Detection đầu buổi.

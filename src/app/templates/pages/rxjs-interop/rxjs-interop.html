@@ -1,0 +1,64 @@
+<h3>RxJS Interoperability: toSignal & toObservable</h3>
+
+<hr />
+
+<p>
+  Signals mạnh về <b>state đồng bộ + render</b>, RxJS mạnh về
+  <b>thời gian và điều phối bất đồng bộ</b> (debounce, retry, hủy request...).
+  <code>toSignal</code> / <code>toObservable</code> là cây cầu nối hai thế giới: demo bên dưới là
+  một ô search với <b>Signal → toObservable → debounceTime + switchMap → toSignal</b>.
+</p>
+
+<p>
+  <label>
+    Search (gõ nhanh để thấy debounce):
+    <input
+      [value]="searchTerm()"
+      (input)="onSearch($event)"
+      placeholder="thử gõ 'ng' hoặc 'signal'..."
+    />
+  </label>
+</p>
+<p>
+  searchTerm (signal): <span class="highlight">"{{ searchTerm() }}"</span> - Số lần API thật sự được
+  gọi: <span class="highlight">{{ searchCallCount() }}</span>
+</p>
+<p>Kết quả (đọc từ toSignal):</p>
+<ul>
+  @for (item of results(); track item) {
+    <li>{{ item }}</li>
+  } @empty {
+    <li><em>Chưa có kết quả</em></li>
+  }
+</ul>
+
+<hr />
+
+<app-code-presenter-signal fileName="rxjs-interop/search-debounce.ts"> </app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplainInterop()) {
+  <app-code-presenter-signal fileName="rxjs-interop/interop-cheatsheet.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal [fileName]="'explain-rxjs-interop.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerExplainInterop()">
+    Explain: toSignal & toObservable - The perfect bridge
+  </button>
+}
+
+<hr />
+@if (this.showPitfalls()) {
+  <app-code-presenter-signal fileName="rxjs-interop/interop-pitfalls.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal [fileName]="'explain-interop-pitfalls.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerPitfalls()">Reveal: Những cái bẫy cần biết</button>
+}

@@ -12,6 +12,7 @@ import {DemoMulticast} from '@pages/demo-multicast/demo-multicast';
 import {Summary} from '@pages/summary/summary';
 import {CorePrimitives} from '@pages/core-primitives/core-primitives';
 import {SignalComponents} from '@pages/signal-components/signal-components';
+import {RxjsInterop} from '@pages/rxjs-interop/rxjs-interop';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,10 @@ export const routes: Routes = [
   {
     path: 'signal-components',
     component: SignalComponents,
+  },
+  {
+    path: 'rxjs-interop',
+    component: RxjsInterop,
   },
   {
     path: 'best-practice-service',

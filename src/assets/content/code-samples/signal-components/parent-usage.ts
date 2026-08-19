@@ -27,8 +27,9 @@ export class ParentDemoComponent {
   readonly ticketQuantity = signal(1);
 
   // 4. viewChild(): query component con dưới dạng SIGNAL (thay cho @ViewChild).
-  //    Không còn cảnh chờ AfterViewInit hay undefined bất ngờ -
-  //    signal tự cập nhật khi view được tạo/hủy (kể cả trong @if/@for)
+  //    Đọc an toàn ở mọi thời điểm (chưa có view thì trả undefined thay vì
+  //    phải canh AfterViewInit), và vì là signal nên computed/effect
+  //    tự chạy lại khi view được tạo/hủy (kể cả trong @if/@for)
   private readonly stepper = viewChild(QuantityStepper);
 
   // computed đọc xuyên qua viewChild -> TỰ tính lại khi state của con đổi
