@@ -11,6 +11,7 @@ import {ExplainReactiveImperative} from '@pages/explain-reactive-imperative/expl
 import {DemoMulticast} from '@pages/demo-multicast/demo-multicast';
 import {Summary} from '@pages/summary/summary';
 import {CorePrimitives} from '@pages/core-primitives/core-primitives';
+import {SignalComponents} from '@pages/signal-components/signal-components';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,10 @@ export const routes: Routes = [
   {
     path: 'core-primitives',
     component: CorePrimitives,
+  },
+  {
+    path: 'signal-components',
+    component: SignalComponents,
   },
   {
     path: 'best-practice-service',

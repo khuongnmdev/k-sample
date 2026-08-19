@@ -1,0 +1,66 @@
+<h3>Signal-based Components: input - output - model - viewChild</h3>
+
+<hr />
+
+<p>
+  Angular hiện đại thay bộ decorator <code>&#64;Input</code>/<code>&#64;Output</code>/<code
+    >&#64;ViewChild</code
+  >
+  bằng các hàm signal-first: <b>input()</b> nhận dữ liệu, <b>output()</b> phát sự kiện,
+  <b>model()</b> cho two-way binding, và <b>viewChild()</b> query view - tất cả đều hòa vào hệ thống
+  reactive của Signals.
+</p>
+
+<app-quantity-stepper
+  label="Vé xem phim"
+  [max]="5"
+  [(quantity)]="ticketQuantity"
+  (reachedMax)="onReachedMax($event)"
+/>
+
+<p>
+  Signal phía cha (two-way qua <code>model</code>):
+  <span class="highlight">{{ ticketQuantity() }}</span>
+  <br />
+  <em>{{ stepperInfo() }}</em>
+</p>
+@if (maxMessage()) {
+  <p class="highlight">{{ maxMessage() }}</p>
+}
+<button class="btn" (click)="resetFromParent()">Reset từ phía cha (set signal)</button>
+
+<hr />
+
+<app-code-presenter-signal fileName="signal-components/quantity-stepper.ts">
+</app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplainSignalApis()) {
+  <app-code-presenter-signal fileName="signal-components/parent-usage.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal
+    [fileName]="'explain-signal-components.md'"
+  ></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerExplainSignalApis()">
+    Explain: input() - output() - model() - viewChild()
+  </button>
+}
+
+<hr />
+@if (this.showOldVsNew()) {
+  <app-code-presenter-signal fileName="signal-components/old-decorators.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal [fileName]="'explain-old-vs-new.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerOldVsNew()">
+    So sánh với cách cũ: &#64;Input / &#64;Output / &#64;ViewChild
+  </button>
+}

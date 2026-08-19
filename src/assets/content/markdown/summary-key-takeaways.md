@@ -11,6 +11,7 @@ Tổng kết lại hành trình từ Change Detection tới Best Practices:
 
 - `signal` cho state gốc, `computed` cho state dẫn xuất (lazy + memoized), `effect` **chỉ** cho side effect (log, storage, DOM, chart).
 - Đừng dùng `effect` để set signal khác - đó là dấu hiệu bạn đang cần `computed` (hoặc `linkedSignal`).
+- Giao tiếp component cũng signal-first: `input()`, `output()`, `model()`, `viewChild()` thay cho bộ decorator `@Input`/`@Output`/`@ViewChild` cũ.
 
 ### 3. Reactive thay vì Imperative
 

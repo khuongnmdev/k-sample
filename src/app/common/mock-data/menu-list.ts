@@ -38,6 +38,10 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/core-primitives',
   },
   {
+    name: MenuItemEnum.SignalComponents,
+    link: '/signal-components',
+  },
+  {
     name: MenuItemEnum.DemoBestPracticeService,
     link: '/best-practice-service',
   },
