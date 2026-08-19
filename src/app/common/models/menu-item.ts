@@ -12,6 +12,7 @@ export const MenuItemEnum = {
   DemoPolling: 'Demo Polling',
   DemoPollingByList: 'Demo Polling By List',
   DemoBasicMulticast: 'Unicast vs Multicast',
+  CorePrimitives: 'Signal Core Primitives',
   DemoBestPracticeService: 'Service Best Practices',
   Summary: 'Key Takeaways',
 };

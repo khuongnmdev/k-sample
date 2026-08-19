@@ -1,0 +1,57 @@
+<h3>Core Primitives: signal - computed - effect</h3>
+
+<hr />
+
+<p>
+  Ba primitive cốt lõi của hệ thống Signals: <b>signal</b> giữ state gốc, <b>computed</b> dẫn xuất
+  dữ liệu từ state khác, còn <b>effect</b> dành cho side effect. Chọn đúng primitive cho đúng việc -
+  đặc biệt là biết khi nào <b>không nên</b> dùng <code>effect</code>.
+</p>
+
+<p>
+  Quantity (signal): <span class="highlight">{{ quantity() }}</span> × Price (signal):
+  <span class="highlight">{{ price() }}</span> = Total (computed):
+  <span class="highlight">{{ total() }}</span>
+</p>
+
+<button class="btn" (click)="addQuantity()">Quantity +1</button>
+<button class="btn" (click)="addPrice()">Price +10.000</button>
+<button class="btn" (click)="reset()">Reset</button>
+<p>
+  <em>
+    Total (computed) cập nhật đồng bộ ngay khi bấm nút - còn effect log ra console mỗi lần total
+    đổi. Note: Open console to see the log.
+  </em>
+</p>
+
+<hr />
+
+<app-code-presenter-signal fileName="core-primitives/signal-computed-effect.ts">
+</app-code-presenter-signal>
+
+<hr />
+
+@if (this.showExplainPrimitives()) {
+  <app-code-presenter-signal [fileName]="'explain-core-primitives.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerExplainPrimitives()">
+    Explain: signal vs computed vs effect
+  </button>
+}
+
+<hr />
+@if (this.showAvoidEffect()) {
+  <app-code-presenter-signal fileName="core-primitives/effect-bad-vs-good.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal fileName="core-primitives/effect-loop-untracked.ts">
+  </app-code-presenter-signal>
+
+  <hr />
+
+  <app-code-presenter-signal [fileName]="'explain-avoid-effect.md'"></app-code-presenter-signal>
+} @else {
+  <button class="btn" (click)="triggerAvoidEffect()">Reveal: Khi nào nên tránh effect?</button>
+}

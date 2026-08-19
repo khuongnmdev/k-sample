@@ -10,6 +10,7 @@ import {BestPracticeService} from '@pages/best-practice-service/best-practice-se
 import {ExplainReactiveImperative} from '@pages/explain-reactive-imperative/explain-reactive-imperative';
 import {DemoMulticast} from '@pages/demo-multicast/demo-multicast';
 import {Summary} from '@pages/summary/summary';
+import {CorePrimitives} from '@pages/core-primitives/core-primitives';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,10 @@ export const routes: Routes = [
   {
     path: 'demo-catch-error',
     component: DemoCatchError,
+  },
+  {
+    path: 'core-primitives',
+    component: CorePrimitives,
   },
   {
     path: 'best-practice-service',

@@ -34,6 +34,10 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/demo-multicast',
   },
   {
+    name: MenuItemEnum.CorePrimitives,
+    link: '/core-primitives',
+  },
+  {
     name: MenuItemEnum.DemoBestPracticeService,
     link: '/best-practice-service',
   },
