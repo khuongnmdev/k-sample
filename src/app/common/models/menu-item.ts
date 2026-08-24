@@ -11,7 +11,7 @@ export const MenuItemEnum = {
   SignalComponents: 'Signal-based Components',
   RxjsInterop: 'RxJS Interoperability',
   ResourceApi: 'Resource APIs',
-  DemoSwitchMap: 'Subscribe Hell → switchMap',
+  DemoSwitchMap: 'SwitchMap',
   DemoCatchError: 'CatchError Operator',
   DemoPolling: 'Demo Polling',
   DemoPollingByList: 'Demo Polling By List',
