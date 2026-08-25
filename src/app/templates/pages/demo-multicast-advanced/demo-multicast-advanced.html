@@ -1,0 +1,266 @@
+<h3>RxJS Multicast Advanced: shareReplay vs ReplaySubject</h3>
+
+<hr />
+
+<p>
+  <b>Subscriber muộn</b> = người subscribe SAU khi nguồn đã phát được vài giá trị.
+  <br />
+  Với <code>share()</code> (trang Unicast vs Multicast), subscriber muộn bị <b>MISS</b> hết các giá
+  trị cũ.
+  <br />
+  <code>shareReplay(n)</code> sửa điều đó: phát lại <b>n giá trị gần nhất</b> cho người đến muộn.
+  <br />
+  Tham số <code>refCount</code> quyết định số phận NGUỒN khi hết subscriber: <b>true</b> = hủy nguồn,
+  <b>false</b> (mặc định) = nguồn chưa xong tiếp tục chạy ngầm.
+  <br />
+  <code>ReplaySubject(n)</code> cũng replay y như vậy, khác ở chỗ BẠN tự phát giá trị bằng
+  <code>.next()</code>.
+  <br />
+  Cách thử ở cả 3 khung: Subscribe A trước, đợi vài nhịp, Subscribe B để xem replay; rồi unsubscribe
+  hết và quan sát side-effect.
+</p>
+
+<hr />
+
+<div class="simulation-grid">
+  <!-- REFCOUNT TRUE CARD -->
+  <div class="sim-card rc-on">
+    <div class="sim-header">
+      <h4>1. shareReplay + refCount: true</h4>
+      <button class="btn btn-secondary btn-sm" (click)="resetRefCountOn()">Reset</button>
+    </div>
+
+    <div class="side-effect-box">
+      Số lần side-effect chạy: <span class="badge badge-rc-on">{{ refCountOnSideEffects() }}</span>
+      <p class="desc">(NGỪNG tăng khi hết subscriber - nguồn được hủy đúng cách)</p>
+    </div>
+
+    <p class="card-note">
+      B sub muộn: nhận lại 2 giá trị gần nhất.
+      <br />
+      Unsubscribe hết rồi sub lại: nguồn chạy MỚI từ 0, buffer cũ đã bị xóa.
+      <br />
+      Use case: stream vô hạn dùng chung (websocket giá, sensor) - tự dọn khi không ai xem.
+    </p>
+
+    <div class="observers-container">
+      <div class="observer-box border-a">
+        <div class="obs-header">
+          <span>Observer A</span>
+          <span class="status-badge" [class.active]="refCountOnA.isSubscribed()">
+            {{ refCountOnA.isSubscribed() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="refCountOnA.toggle()">
+          {{ refCountOnA.isSubscribed() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (refCountOnA.values().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of refCountOnA.values(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="observer-box border-b">
+        <div class="obs-header">
+          <span>Observer B (sub muộn)</span>
+          <span class="status-badge" [class.active]="refCountOnB.isSubscribed()">
+            {{ refCountOnB.isSubscribed() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="refCountOnB.toggle()">
+          {{ refCountOnB.isSubscribed() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (refCountOnB.values().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of refCountOnB.values(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFCOUNT FALSE CARD -->
+  <div class="sim-card rc-off">
+    <div class="sim-header">
+      <h4>2. shareReplay + refCount: false (mặc định)</h4>
+      <button class="btn btn-secondary btn-sm" (click)="resetRefCountOff()">Reset</button>
+    </div>
+
+    <div class="side-effect-box">
+      Số lần side-effect chạy:
+      <span class="badge badge-rc-off">{{ refCountOffSideEffects() }}</span>
+      <p class="desc">(VẪN tăng sau khi cả 2 unsubscribe - đây chính là chỗ dễ leak)</p>
+    </div>
+
+    <p class="card-note">
+      Đang có subscriber thì giống hệt khung 1.
+      <br />
+      Khác biệt: unsubscribe hết, nguồn VẪN chạy ngầm - sub lại nhận buffer + execution cũ.
+      <br />
+      Use case: cache HTTP (config, user profile) - request xong là nguồn kết thúc, không lo leak.
+    </p>
+
+    <div class="observers-container">
+      <div class="observer-box border-a">
+        <div class="obs-header">
+          <span>Observer A</span>
+          <span class="status-badge" [class.active]="refCountOffA.isSubscribed()">
+            {{ refCountOffA.isSubscribed() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="refCountOffA.toggle()">
+          {{ refCountOffA.isSubscribed() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (refCountOffA.values().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of refCountOffA.values(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="observer-box border-b">
+        <div class="obs-header">
+          <span>Observer B (sub muộn)</span>
+          <span class="status-badge" [class.active]="refCountOffB.isSubscribed()">
+            {{ refCountOffB.isSubscribed() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="refCountOffB.toggle()">
+          {{ refCountOffB.isSubscribed() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (refCountOffB.values().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of refCountOffB.values(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPLAY SUBJECT CARD -->
+  <div class="sim-card replay-subject">
+    <div class="sim-header">
+      <h4>3. ReplaySubject(2)</h4>
+      <button class="btn btn-secondary btn-sm" (click)="resetReplaySubject()">Reset</button>
+    </div>
+
+    <div class="side-effect-box">
+      Đã phát bằng .next(): <span class="badge badge-subject">{{ emittedCount() }}</span>
+      <p class="desc">(Không có nguồn cold phía sau - BẠN tự phát giá trị)</p>
+    </div>
+
+    <p class="card-note">
+      Phát vài giá trị trước, rồi Subscribe muộn: vẫn nhận lại 2 giá trị cuối.
+      <br />
+      Use case: event bus có lịch sử - component mount muộn vẫn thấy n sự kiện gần nhất.
+    </p>
+
+    <button class="btn btn-sm" (click)="emitValue()">Phát giá trị (.next)</button>
+
+    <div class="observers-container">
+      <div class="observer-box border-a">
+        <div class="obs-header">
+          <span>Observer A</span>
+          <span class="status-badge" [class.active]="replayA.isSubscribed()">
+            {{ replayA.isSubscribed() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="replayA.toggle()">
+          {{ replayA.isSubscribed() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (replayA.values().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of replayA.values(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="observer-box border-b">
+        <div class="obs-header">
+          <span>Observer B (sub muộn)</span>
+          <span class="status-badge" [class.active]="replayB.isSubscribed()">
+            {{ replayB.isSubscribed() ? 'Subscribed' : 'Idle' }}
+          </span>
+        </div>
+        <button class="btn btn-sm" (click)="replayB.toggle()">
+          {{ replayB.isSubscribed() ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+        <div class="values-list">
+          @if (replayB.values().length === 0) {
+            <span class="empty-text">Chưa nhận dữ liệu</span>
+          } @else {
+            <div class="chips-container">
+              @for (v of replayB.values(); track $index) {
+                <span class="chip-val">{{ v }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr />
+
+<h4>Code Samples</h4>
+
+<div class="code-samples-grid">
+  <div>
+    <h5>shareReplay: cache HTTP vs stream vô hạn</h5>
+    <app-code-presenter-signal
+      fileName="demo-multicast-advanced/share-replay.ts"
+    ></app-code-presenter-signal>
+  </div>
+  <div>
+    <h5>ReplaySubject: event bus có lịch sử</h5>
+    <app-code-presenter-signal
+      fileName="demo-multicast-advanced/replay-subject.ts"
+    ></app-code-presenter-signal>
+  </div>
+</div>
+
+<hr />
+
+@if (this.showExplainAdvanced()) {
+  <app-code-presenter-signal fileName="explain-multicast-advanced.md"></app-code-presenter-signal>
+
+  <div style="margin-top: 1.5rem; text-align: center">
+    <button class="btn" (click)="triggerExplainAdvanced()">Hide</button>
+  </div>
+} @else {
+  <div style="margin-top: 1.5rem; text-align: center">
+    <button class="btn" (click)="triggerExplainAdvanced()">Explain</button>
+  </div>
+}

@@ -9,6 +9,7 @@ import {DemoCatchError} from '@pages/catch-error-operator/demo-catch-error';
 import {BestPracticeService} from '@pages/best-practice-service/best-practice-service';
 import {ExplainReactiveImperative} from '@pages/explain-reactive-imperative/explain-reactive-imperative';
 import {DemoMulticast} from '@pages/demo-multicast/demo-multicast';
+import {DemoMulticastAdvanced} from '@pages/demo-multicast-advanced/demo-multicast-advanced';
 import {Summary} from '@pages/summary/summary';
 import {CorePrimitives} from '@pages/core-primitives/core-primitives';
 import {SignalComponents} from '@pages/signal-components/signal-components';
@@ -67,6 +68,10 @@ export const routes: Routes = [
   {
     path: 'demo-multicast',
     component: DemoMulticast,
+  },
+  {
+    path: 'demo-multicast-advanced',
+    component: DemoMulticastAdvanced,
   },
   {
     path: 'summary',

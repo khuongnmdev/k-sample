@@ -50,6 +50,10 @@ export const DEFAULT_MENU_LIST: MenuItem[] = [
     link: '/demo-multicast',
   },
   {
+    name: MenuItemEnum.DemoAdvancedMulticast,
+    link: '/demo-multicast-advanced',
+  },
+  {
     name: MenuItemEnum.DemoBestPracticeService,
     link: '/best-practice-service',
   },
