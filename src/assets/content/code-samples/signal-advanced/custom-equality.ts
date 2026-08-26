@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, signal } from '@angular/core';
 
 interface User {
   name: string;
@@ -7,41 +7,65 @@ interface User {
 
 @Component({
   selector: 'app-custom-equality-demo',
-  template: `<p>{{ userSmart().name }} - {{ userSmart().age }} tuổi</p>`,
+  template: `
+    <button (click)="refreshSameContent()">Server trả y hệt (ref mới)</button>
+    <button (click)="increaseAge()">Tăng tuổi (+1)</button>
+    <p>signal mặc định notify: {{ defaultNotifyCount() }}</p>
+    <p>signal có equal notify: {{ smartNotifyCount() }}</p>
+  `,
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomEqualityDemo {
-  // Mặc định signal so sánh bằng Object.is:
-  // - primitive (number, string, boolean): so sánh giá trị -> ổn
-  // - object / array: so sánh REFERENCE -> đây là nơi sinh ra 2 cái bẫy
-  readonly user = signal<User>({ name: 'Tèo', age: 20 });
+  // Mặc định so sánh bằng Object.is: với object là so sánh REFERENCE
+  // -> object MỚI cùng nội dung vẫn bị coi là "đã đổi"
+  readonly defaultUser = signal<User>({ name: 'Tèo', age: 20 });
 
-  // equal tùy chỉnh: tự định nghĩa thế nào là "không đổi" (so sánh nội dung)
-  readonly userSmart = signal<User>(
+  // equal tùy chỉnh: so sánh theo NỘI DUNG
+  // -> nội dung trùng thì im lặng, không notify ai cả
+  readonly smartUser = signal<User>(
     { name: 'Tèo', age: 20 },
     { equal: (a, b) => a.name === b.name && a.age === b.age },
   );
 
-  // BẪY 1 - notify thừa: polling trả về object MỚI nhưng nội dung Y HỆT
-  refreshFromServer() {
-    const data = { name: 'Tèo', age: 20 }; // reference mới, nội dung cũ
-    this.user.set(data); // "đã đổi" -> mọi computed/effect/template chạy lại THỪA
-    this.userSmart.set(data); // equal bảo "không đổi" -> im lặng, không ai chạy lại
+  // "Máy đếm" của demo: mỗi effect ĐỌC một signal - chỉ cần đọc là effect
+  // phụ thuộc vào signal đó. Signal notify -> effect chạy lại -> counter +1.
+  // Cả hai bắt đầu từ 1 vì effect luôn chạy lần đầu khi khởi tạo.
+  readonly defaultNotifyCount = signal(0);
+  readonly smartNotifyCount = signal(0);
+
+  constructor() {
+    effect(() => {
+      this.defaultUser();
+      this.defaultNotifyCount.update((c) => c + 1);
+    });
+    effect(() => {
+      this.smartUser();
+      this.smartNotifyCount.update((c) => c + 1);
+    });
+    // Lưu ý: effect ở đây chỉ làm nhiệm vụ ĐO ĐẠC cho demo (như log) - hợp lệ.
+    // Đừng dùng effect để TÍNH state từ signal khác - đó là việc của computed.
   }
 
-  // BẪY 2 - không update: MUTATE tại chỗ rồi set lại CÙNG reference
-  wrongMutation() {
-    const u = this.user();
-    u.age = 99; // mutate trực tiếp
-    this.user.set(u); // cùng reference -> Object.is bảo "không đổi" -> UI ĐỨNG IM!
+  // Nút 1: giả lập server trả DỮ LIỆU Y HỆT nhưng là object mới (reference mới)
+  // -> defaultUser notify (THỪA - render/tính lại vô ích), smartUser im lặng nhờ equal
+  refreshSameContent() {
+    this.defaultUser.set({ ...this.defaultUser() });
+    this.smartUser.set({ ...this.smartUser() });
   }
 
-  // Cách đúng: luôn tạo object mới khi nội dung đổi (immutable update)
-  correctUpdate() {
-    this.user.update((u) => ({ ...u, age: 99 }));
+  // Nút 2: nội dung đổi thật -> CẢ HAI cùng notify (equal trả false)
+  increaseAge() {
+    this.defaultUser.update((u) => ({ ...u, age: u.age + 1 }));
+    this.smartUser.update((u) => ({ ...u, age: u.age + 1 }));
   }
 
-  // computed cũng nhận equal y như vậy:
-  //   readonly total = computed(() => ({...}), { equal: (a, b) => a.sum === b.sum });
+  // Bẫy NGƯỢC cần nhớ: mutate tại chỗ rồi set lại CÙNG reference
+  //   const u = this.defaultUser();
+  //   u.age = 99;
+  //   this.defaultUser.set(u); // cùng ref -> Object.is bảo "không đổi" -> UI ĐỨNG IM!
+  // Cách đúng: luôn immutable update như increaseAge() ở trên.
+
+  // computed cũng nhận equal y hệt:
+  //   readonly total = computed(() => ({ ... }), { equal: (a, b) => a.sum === b.sum });
 }
