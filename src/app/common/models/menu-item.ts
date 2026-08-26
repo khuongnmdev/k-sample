@@ -1,6 +1,13 @@
+export type MenuLevel = 'basic' | 'advanced' | 'summary';
+export type MenuGroup = 'basic' | 'signal' | 'rxjs' | 'summary';
+
 export interface MenuItem {
   name: string;
   link: string;
+  // level: item background color (basic/advanced/summary); omit for neutral items (Home)
+  level?: MenuLevel;
+  // group: topic block on the menu (Basic / Signal / RxJS / Summary)
+  group?: MenuGroup;
 }
 
 export const MenuItemEnum = {
@@ -11,6 +18,7 @@ export const MenuItemEnum = {
   SignalComponents: 'Signal-based Components',
   RxjsInterop: 'RxJS Interoperability',
   ResourceApi: 'Resource APIs',
+  SignalAdvanced: 'Signal Advanced',
   DemoSwitchMap: 'SwitchMap',
   DemoCatchError: 'CatchError Operator',
   DemoPolling: 'Demo Polling',

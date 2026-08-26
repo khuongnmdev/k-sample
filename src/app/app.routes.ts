@@ -15,6 +15,7 @@ import {CorePrimitives} from '@pages/core-primitives/core-primitives';
 import {SignalComponents} from '@pages/signal-components/signal-components';
 import {RxjsInterop} from '@pages/rxjs-interop/rxjs-interop';
 import {ResourceApi} from '@pages/resource-api/resource-api';
+import {SignalAdvanced} from '@pages/signal-advanced/signal-advanced';
 
 export const routes: Routes = [
   {
@@ -52,6 +53,10 @@ export const routes: Routes = [
   {
     path: 'resource-api',
     component: ResourceApi,
+  },
+  {
+    path: 'signal-advanced',
+    component: SignalAdvanced,
   },
   {
     path: 'best-practice-service',

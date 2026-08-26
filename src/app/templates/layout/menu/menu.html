@@ -9,9 +9,27 @@
   </div>
   @if (menuList()) {
     <ul class="menu-list">
-      @for (menu of menuList(); track $index) {
+      @for (menu of menuList(); track $index; let i = $index) {
+        @if (showBlockLabel(i)) {
+          <li
+            class="menu-block-label"
+            [class.basic]="menu.group === 'basic'"
+            [class.rxjs]="menu.group === 'rxjs'"
+            [class.summary]="menu.group === 'summary'"
+          >
+            {{ groupTitle(menu.group) }}
+          </li>
+        }
         <li class="menu-item">
-          <a class="menu-link" [routerLink]="menu.link" routerLinkActive="activated">
+          <a
+            class="menu-link"
+            [class.level-basic]="menu.level === 'basic'"
+            [class.level-advanced]="menu.level === 'advanced'"
+            [class.level-summary]="menu.level === 'summary'"
+            [title]="levelTooltip(menu.level)"
+            [routerLink]="menu.link"
+            routerLinkActive="activated"
+          >
             {{ menu.name }}
           </a>
         </li>

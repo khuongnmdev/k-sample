@@ -22,14 +22,14 @@ export class DemoMulticastAdvanced {
     this.showExplainAdvanced.update((v) => !v);
   }
 
-  // ===== 1. shareReplay + refCount: true - hết subscriber là nguồn DỪNG =====
+  // ===== 1. shareReplay + refCount: true - source STOPS when subscribers are gone =====
   protected readonly refCountOnSideEffects = signal<number>(0);
 
   private readonly refCountOn$ = interval(INTERVAL_TIME).pipe(
     tap(() => this.refCountOnSideEffects.update((c) => c + 1)),
     takeUntilDestroyed(this.destroyRef),
-    // refCount: true - subscriber cuối rời đi là nguồn bị hủy + buffer bị xóa,
-    // subscribe lại sẽ chạy một execution MỚI từ đầu
+    // refCount: true - when the last subscriber leaves, the source is torn down
+    // and the buffer cleared; resubscribing starts a FRESH execution
     shareReplay({bufferSize: REPLAY_BUFFER, refCount: true}),
   );
 
@@ -42,14 +42,14 @@ export class DemoMulticastAdvanced {
     this.refCountOnSideEffects.set(0);
   }
 
-  // ===== 2. shareReplay(2) mặc định (refCount: false) - nguồn chạy NGẦM =====
+  // ===== 2. shareReplay(2) default (refCount: false) - source keeps running in the BACKGROUND =====
   protected readonly refCountOffSideEffects = signal<number>(0);
 
   private readonly refCountOff$ = interval(INTERVAL_TIME).pipe(
     tap(() => this.refCountOffSideEffects.update((c) => c + 1)),
     takeUntilDestroyed(this.destroyRef),
-    // Dạng gọn shareReplay(n) luôn là refCount: false - hết subscriber
-    // nguồn VẪN chạy ngầm và buffer được giữ nguyên (xem side-effect)
+    // Shorthand shareReplay(n) is always refCount: false - with no subscribers
+    // the source KEEPS running in the background and the buffer is kept (watch the side-effect)
     shareReplay(REPLAY_BUFFER),
   );
 
@@ -62,11 +62,11 @@ export class DemoMulticastAdvanced {
     this.refCountOffSideEffects.set(0);
   }
 
-  // ===== 3. ReplaySubject(2) - TỰ phát giá trị bằng .next() =====
+  // ===== 3. ReplaySubject(2) - YOU emit values via .next() =====
   protected readonly emittedCount = signal<number>(0);
 
   private replaySubject = new ReplaySubject<number>(REPLAY_BUFFER);
-  // defer: subscribe tại thời điểm bấm nút -> sau Reset sẽ bám vào subject MỚI
+  // defer: subscribes at click time -> after Reset new subscribers attach to the NEW subject
   private readonly replaySubject$ = defer(() => this.replaySubject);
 
   protected readonly replayA = this.createObserverSlot(this.replaySubject$);
@@ -84,7 +84,7 @@ export class DemoMulticastAdvanced {
     this.replaySubject = new ReplaySubject<number>(REPLAY_BUFFER);
   }
 
-  // Một "Observer slot": trạng thái subscribe + values nhận được + toggle
+  // One "observer slot": subscription state + received values + toggle
   private createObserverSlot(source$: Observable<number>) {
     const values = signal<number[]>([]);
     const isSubscribed = signal<boolean>(false);

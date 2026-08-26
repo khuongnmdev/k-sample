@@ -1,0 +1,135 @@
+<h3>Signal Advanced: linkedSignal - Custom Equality - Router Input Binding</h3>
+
+<hr />
+
+<p>
+  Ba công cụ Signal cần biết sau khi đã vững <code>signal</code> / <code>computed</code> /
+  <code>effect</code>.
+  <br />
+  <code>linkedSignal</code>: state dẫn xuất như computed, nhưng user GHI ĐÈ được.
+  <br />
+  <code>equal</code>: dạy cho signal biết thế nào là "giá trị không đổi" để khỏi notify thừa.
+  <br />
+  <code>withComponentInputBinding</code>: param trên URL tự chảy vào <code>input()</code>, không cần
+  ActivatedRoute.
+</p>
+
+<hr />
+
+<div class="simulation-grid">
+  <!-- LINKED SIGNAL CARD -->
+  <div class="sim-card linked">
+    <div class="sim-header">
+      <h4>1. linkedSignal - Betslip</h4>
+    </div>
+
+    <p class="card-note">
+      <b>linkedSignal = signal GHI ĐƯỢC (.set) + TỰ TÍNH LẠI khi nguồn đổi</b> - con lai giữa
+      <code>signal</code> và <code>computed</code>.
+      <br />
+      Trong demo, cờ "cần xác nhận odds" là một linkedSignal với NGUỒN là <code>odds</code> (input
+      từ parent, server đổi random mỗi 5 giây):
+      <br />
+      1. Odds đổi → công thức tự chạy lại → cờ bật true → nút Đặt cược bị khóa.
+      <br />
+      2. User bấm "Chấp nhận odds mới" → <code>.set(false)</code> ghi đè → mở khóa.
+      <br />
+      3. Stake là signal thường - odds đổi KHÔNG đụng tới tiền user đang nhập.
+      <br />
+      Thử: nhập stake, chờ 5 giây cho odds đổi, quan sát nút Đặt cược và stake.
+    </p>
+
+    <app-betslip [odds]="liveOdds()"></app-betslip>
+  </div>
+
+  <!-- CUSTOM EQUALITY CARD -->
+  <div class="sim-card equality">
+    <div class="sim-header">
+      <h4>2. Custom Equality</h4>
+    </div>
+
+    <p class="card-note">
+      Hai signal cùng chứa object user. Khác nhau duy nhất: một cái có <code>equal</code> so sánh
+      nội dung.
+      <br />
+      "Server trả y hệt": object MỚI nhưng nội dung cũ - signal mặc định vẫn notify (thừa), signal
+      có equal thì im lặng.
+      <br />
+      "Tăng tuổi": nội dung đổi thật - cả hai cùng notify.
+    </p>
+
+    <button class="btn btn-sm" (click)="refreshSameContent()">Server trả y hệt (ref mới)</button>
+    <button class="btn btn-sm" (click)="increaseAge()">Tăng tuổi (+1)</button>
+
+    <div class="side-effect-box">
+      <div>
+        signal mặc định notify:
+        <span class="badge badge-default">{{ defaultNotifyCount() }}</span>
+      </div>
+      <div>
+        signal có equal notify:
+        <span class="badge badge-smart">{{ smartNotifyCount() }}</span>
+      </div>
+      <p class="desc">(user hiện tại: {{ smartUser().name }} - {{ smartUser().age }} tuổi)</p>
+    </div>
+  </div>
+
+  <!-- ROUTER INPUT BINDING CARD -->
+  <div class="sim-card router-binding">
+    <div class="sim-header">
+      <h4>3. withComponentInputBinding</h4>
+    </div>
+
+    <p class="card-note">
+      Bấm nút để đổi query param trên URL (nhìn thanh địa chỉ).
+      <br />
+      Giá trị chảy thẳng vào <code>input()</code> của component - không ActivatedRoute, không
+      subscribe.
+      <br />
+      Use case: filter / tab / voucher share được qua URL, F5 không mất state.
+    </p>
+
+    <button class="btn btn-sm" (click)="applyVoucher('SALE50')">?voucher=SALE50</button>
+    <button class="btn btn-sm" (click)="applyVoucher('FREESHIP')">?voucher=FREESHIP</button>
+    <button class="btn btn-sm" (click)="applyVoucher(null)">Xóa voucher</button>
+
+    <p class="result-line">
+      voucher() = <span class="highlight">{{ voucher() || '(chưa có)' }}</span>
+    </p>
+  </div>
+</div>
+
+<hr />
+
+<h4>Code Samples</h4>
+
+<div class="code-samples-grid">
+  <div>
+    <h5>linkedSignal - Betslip</h5>
+    <app-code-presenter-signal
+      fileName="signal-advanced/linked-signal.ts"
+    ></app-code-presenter-signal>
+  </div>
+  <div>
+    <h5>Custom equality - 2 chiều của bẫy</h5>
+    <app-code-presenter-signal
+      fileName="signal-advanced/custom-equality.ts"
+    ></app-code-presenter-signal>
+  </div>
+  <div>
+    <h5>Router Input Binding</h5>
+    <app-code-presenter-signal
+      fileName="signal-advanced/router-input-binding.ts"
+    ></app-code-presenter-signal>
+  </div>
+</div>
+
+<hr />
+
+@if (this.showExplainSignalAdvanced()) {
+  <app-code-presenter-signal fileName="explain-signal-advanced.md"></app-code-presenter-signal>
+} @else {
+  <div style="margin-top: 1.5rem; text-align: center">
+    <button class="btn" (click)="triggerExplainSignalAdvanced()">Explain</button>
+  </div>
+}
