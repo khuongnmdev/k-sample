@@ -32,16 +32,26 @@ Tham số `refCount` chính là câu trả lời:
 > Cú pháp đầy đủ: `shareReplay({bufferSize: n, refCount: true})`.
 > Dạng gọn `shareReplay(n)` luôn là `refCount: false`.
 
+**Nguồn VÔ HẠN vs nguồn TỰ KẾT THÚC là gì?**
+
+Một Observable có thể phát tín hiệu **complete** - nghĩa là "hết, không còn giá trị nào nữa".
+
+- **Nguồn TỰ KẾT THÚC**: phát xong dữ liệu rồi tự complete. Điển hình là HTTP request - server trả response xong là luồng đóng ngay. Tự complete = tự dọn dẹp, không còn gì chạy phía sau.
+- **Nguồn VÔ HẠN**: KHÔNG bao giờ tự complete - cứ phát mãi cho tới khi có người unsubscribe. Điển hình: `interval` (chính demo này), websocket giá, `fromEvent` (click, scroll).
+- Liên quan gì tới refCount? Nguồn vô hạn chỉ dừng khi được unsubscribe, mà `refCount: false` thì không bao giờ unsubscribe hộ bạn - nên nguồn vô hạn sẽ chạy ngầm mãi = leak. Nguồn tự kết thúc thì complete xong là xong, refCount nào cũng không leak.
+
 **Use case cho từng chế độ:**
 
 - **`refCount: true` - dùng cho nguồn VÔ HẠN:**
   - Giá coin/chứng khoán qua websocket: 5 widget cùng xem chung 1 kết nối. Widget cuối cùng đóng thì kết nối thật cũng được ngắt.
   - Vị trí GPS, dữ liệu sensor, đồng hồ realtime dùng chung cho nhiều component.
   - Vì sao bắt buộc: nguồn vô hạn không bao giờ tự kết thúc. Nếu không ai hủy giúp, nó chạy ngầm mãi = **memory leak**.
-- **`refCount: false` (mặc định) - dùng cho nguồn TỰ KẾT THÚC:**
-  - Cache HTTP: config hệ thống, user profile, danh sách Category - cả app chỉ gọi đúng 1 request.
+- **`refCount: false` (mặc định) - cache "gọi 1 lần" cho data ÍT thay đổi:**
+  - Điều kiện chọn: nguồn TỰ KẾT THÚC (HTTP) và data hiếm khi đổi trong một phiên app.
+  - Ví dụ: brand config, feature flags, danh sách Category, danh sách tỉnh/thành - cả app gọi đúng 1 request, buffer làm cache tới hết phiên.
   - Component mount muộn (Footer render sau Header) nhận ngay kết quả từ buffer, không bắn request mới.
-  - Vì sao an toàn: request complete ngay sau khi trả kết quả, không còn gì chạy ngầm. Buffer ở lại làm cache cho tới hết phiên app.
+  - Vì sao an toàn: request complete ngay sau khi trả kết quả - không còn gì chạy ngầm để leak.
+  - Vế ngược: data đổi thường xuyên (odds, số dư ví) thì ĐỪNG cache kiểu này - buffer không bao giờ tự làm mới. Dùng stream sống (websocket + `refCount: true`) hoặc `resource` + `reload()`.
 
 **Ghi chú thêm cho đủ bộ:**
 
@@ -86,6 +96,35 @@ Giá trị phát ra được gửi tới TẤT CẢ subscriber đang nghe (Subje
 
 ---
 
+### Bản chất phía sau: tất cả đều là Subject
+
+`share()` và `shareReplay()` không có phép màu riêng.
+Bên trong, chúng đặt một **Subject trung gian** giữa nguồn và các subscriber.
+Nguồn chỉ có đúng 1 subscriber thật là Subject đó; mọi subscriber của bạn nghe qua Subject - vì thế mà thành multicast.
+
+| API bạn dùng           | Subject đứng sau       | Hệ quả hành vi                                                                  |
+| :--------------------- | :--------------------- | :------------------------------------------------------------------------------ |
+| `share()`              | `Subject`              | Không trí nhớ - subscriber muộn miss giá trị cũ                                 |
+| `shareReplay(n)`       | `ReplaySubject(n)`     | Buffer n giá trị - subscriber muộn được replay                                  |
+| Kiểu BehaviorSubject?  | Không có toán tử sẵn   | `share({connector: () => new BehaviorSubject(x)})` - cần giá trị khởi tạo       |
+
+- Điểm hay nhầm: sau `shareReplay` là **ReplaySubject**, KHÔNG phải BehaviorSubject. Nhưng `shareReplay(1)` cho hành vi GẦN giống BehaviorSubject (subscriber muộn nhận 1 giá trị gần nhất) mà không cần giá trị khởi tạo.
+- Tổng quát: `shareReplay(n)` thực chất chỉ là `share()` được cấu hình sẵn:
+
+```typescript
+shareReplay(n);
+// tương đương với:
+share({
+  connector: () => new ReplaySubject(n), // đặt Subject NÀO vào giữa
+  resetOnComplete: false, // nguồn complete xong vẫn giữ buffer làm cache
+  resetOnRefCountZero: false, // = refCount: false - hết subscriber không reset
+});
+```
+
+- Hiểu tầng này rồi, cả họ nhà share chỉ còn là một câu hỏi: **"đặt Subject NÀO vào giữa, và khi nào reset nó?"**
+
+---
+
 ### Bảng so sánh tổng quan
 
 | Tiêu chí             | shareReplay `refCount: true`       | shareReplay mặc định           | `ReplaySubject(n)`             |
@@ -94,13 +133,13 @@ Giá trị phát ra được gửi tới TẤT CẢ subscriber đang nghe (Subje
 | Ai phát giá trị      | Nguồn phía sau (cold)              | Nguồn phía sau (cold)          | Bạn gọi `.next()`              |
 | Subscriber muộn      | Nhận lại n giá trị gần nhất        | Nhận lại n giá trị gần nhất    | Nhận lại n giá trị gần nhất    |
 | Khi hết subscriber   | Hủy nguồn + xóa buffer             | Nguồn chạy ngầm + giữ buffer   | Sống tới khi bạn `.complete()` |
-| Use case tiêu biểu   | Websocket / sensor / stream vô hạn | Cache HTTP (config, profile)   | Event bus, n sự kiện gần nhất  |
+| Use case tiêu biểu   | Websocket / sensor / stream vô hạn | Cache 1 lần data ít đổi (brand config) | Event bus, n sự kiện gần nhất  |
 
 ---
 
 ### Chọn cái nào?
 
-- Cache kết quả HTTP (nguồn tự kết thúc): `shareReplay(1)` mặc định là đủ.
+- Cache HTTP cho data ít thay đổi trong phiên (brand config, danh mục): `shareReplay(1)` mặc định là đủ.
 - Chia sẻ stream vô hạn (websocket, interval): `shareReplay({bufferSize: n, refCount: true})` - bắt buộc nghĩ tới refCount.
 - Tự phát giá trị + cần replay cho subscriber muộn: `ReplaySubject(n)`.
 - Chia sẻ stream live, không cần lịch sử: quay về `share()` là đủ.

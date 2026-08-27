@@ -12,7 +12,10 @@ interface AppConfig {
 export class ConfigService {
   private readonly http = inject(HttpClient);
 
-  // shareReplay(1) = refCount: false (mặc định) - hợp với nguồn TỰ KẾT THÚC như HTTP.
+  // shareReplay(1) = refCount: false (mặc định) - hợp với nguồn TỰ KẾT THÚC như HTTP
+  // (phát xong response là luồng tự complete, không còn gì chạy phía sau).
+  // Chọn khi data ÍT thay đổi trong phiên app (brand config, feature flags):
+  // gọi đúng 1 lần, buffer làm cache dùng tới hết phiên.
   // Header, Sidebar, Footer cùng subscribe -> chỉ 1 request duy nhất.
   // Component mount MUỘN vẫn nhận ngay kết quả cache, không bắn request mới.
   // Request complete ngay nên không có gì chạy ngầm để leak.
@@ -23,7 +26,8 @@ export class ConfigService {
 
 @Injectable({ providedIn: 'root' })
 export class PriceFeedService {
-  // refCount: true - BẮT BUỘC với nguồn VÔ HẠN như websocket (không bao giờ tự kết thúc).
+  // refCount: true - BẮT BUỘC với nguồn VÔ HẠN như websocket
+  // (không bao giờ tự complete - chỉ dừng khi được unsubscribe).
   // 5 widget giá cùng dùng chung 1 kết nối; widget cuối cùng đóng
   // -> refCount về 0 -> ngắt kết nối thật, không chạy ngầm.
   // Nếu dùng shareReplay(1) mặc định ở đây: kết nối sống mãi = LEAK.

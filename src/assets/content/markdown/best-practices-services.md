@@ -66,10 +66,76 @@ export class GlobalDialogService {
 
 ### 💡 Về các hàm Mapper (Ánh xạ dữ liệu)
 
-**Mapper** là các hàm giúp tách biệt cấu trúc dữ liệu của Backend (API) và Frontend (UI).
+**Mapper** tách biệt hình dạng dữ liệu của Backend (**DTO**) khỏi **Model** mà UI sử dụng.
+Backend đổi tên field, đổi format ngày? Chỉ phải sửa đúng MỘT chỗ: mapper.
 
-- **Dự án nhỏ:** Có thể đặt hàm mapper làm `private method` ngay trong Service để tiện sử dụng trong toán tử `.pipe(map(data => this.mapToUI(data)))`.
-- **Dự án lớn:** Nên tách ra file riêng (ví dụ: `user.mapper.ts`) để dễ dàng viết **Unit Test** độc lập và giữ cho Service gọn gàng.
+Một mapper đầy đủ có 2 chiều:
+
+- **`fromDTO`**: DTO → Model. Gọi ngay khi dữ liệu VỪA VÀO app (trong `pipe(map(...))` của Service).
+- **`toDTO`**: Model → DTO. Gọi ngay trước khi dữ liệu RỜI app (body của POST/PUT).
+
+```typescript
+// user.mapper.ts
+
+// DTO: hình dạng dữ liệu của BACKEND (snake_case, ngày dạng string...)
+export interface UserDTO {
+  user_id: number;
+  full_name: string;
+  birth_date: string; // '1995-08-26'
+  vip_level: number;
+}
+
+// Model: hình dạng UI muốn dùng (camelCase, kiểu đúng, có field dẫn xuất)
+export interface User {
+  id: number;
+  fullName: string;
+  birthDate: Date;
+  vipLevel: number;
+  isVip: boolean; // field dẫn xuất cho UI - backend KHÔNG có field này
+}
+
+// DTO -> Model: đổi tên field, parse kiểu, tính sẵn field dẫn xuất
+export function fromDTO(dto: UserDTO): User {
+  return {
+    id: dto.user_id,
+    fullName: dto.full_name,
+    birthDate: new Date(dto.birth_date),
+    vipLevel: dto.vip_level,
+    isVip: dto.vip_level >= 3,
+  };
+}
+
+// Model -> DTO: trả về đúng format backend cần,
+// field dẫn xuất (isVip) bị BỎ - không gửi ngược lên server
+export function toDTO(user: User): UserDTO {
+  return {
+    user_id: user.id,
+    full_name: user.fullName,
+    birth_date: user.birthDate.toISOString().slice(0, 10),
+    vip_level: user.vipLevel,
+  };
+}
+```
+
+Dùng trong Service - component không bao giờ nhìn thấy DTO:
+
+```typescript
+// user.service.ts
+getUser(id: number): Observable<User> {
+  return this.http.get<UserDTO>(`/api/users/${id}`).pipe(map(fromDTO));
+}
+
+updateUser(user: User): Observable<void> {
+  return this.http.put<void>(`/api/users/${user.id}`, toDTO(user));
+}
+```
+
+Quy tắc đi kèm:
+
+- Mapper là **pure function**: nhận vào - trả ra, không side effect. Unit test cực dễ.
+- Map ngay tại **biên** của app (trong Service). DTO không được lọt sâu vào component/template.
+- Field dẫn xuất: giữ field gốc (`vipLevel`) để round-trip được, field dẫn xuất (`isVip`) chỉ thêm cho UI.
+- Dự án nhỏ: mapper có thể là hàm trong Service. Dự án lớn: tách file riêng `*.mapper.ts`.
 
 ---
 

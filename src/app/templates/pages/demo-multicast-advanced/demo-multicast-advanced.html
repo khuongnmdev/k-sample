@@ -110,7 +110,8 @@
       <br />
       Khác biệt: unsubscribe hết, nguồn VẪN chạy ngầm - sub lại nhận buffer + execution cũ.
       <br />
-      Use case: cache HTTP (config, user profile) - request xong là nguồn kết thúc, không lo leak.
+      Use case: data từ BE ÍT thay đổi (brand config, feature flags, danh mục) - gọi đúng 1 lần,
+      buffer làm cache cho cả phiên app. Request tự complete nên không lo leak.
     </p>
 
     <div class="observers-container">

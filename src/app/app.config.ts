@@ -12,8 +12,8 @@ import {provideHttpClient, withFetch} from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // provideZonelessChangeDetection(),
-    provideZoneChangeDetection({eventCoalescing: true}), // Demo ngZone affect
+    provideZonelessChangeDetection(),
+    // provideZoneChangeDetection({eventCoalescing: true}), // Demo ngZone affect
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withFetch()),
