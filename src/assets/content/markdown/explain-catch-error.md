@@ -11,7 +11,7 @@ Có hai chiến thuật chính được minh họa trong code:
 
 2. **Outer catchError (Xử lý toàn cục):**
    - Đặt `catchError` ở cuối chuỗi `pipe` của luồng chính.
-   - **Đặc điểm:** Nếu lỗi lọt xuống tận đây, toàn bộ luồng Observable sẽ **bị hủy (unsubscribed)**. 
+   - **Đặc điểm:** Nếu lỗi lọt xuống tận đây, toàn bộ luồng Observable sẽ **bị hủy (unsubscribed)**.
    - Thường dùng để bắt các lỗi nghiêm trọng mà chúng ta không thể hồi phục được ở các tầng trên.
 
 **Lưu ý quan trọng:** Để ngăn chặn lỗi làm "sập" luồng chính, hãy luôn ưu tiên sử dụng **Inner catchError** cho các lời gọi API bên trong `switchMap`.

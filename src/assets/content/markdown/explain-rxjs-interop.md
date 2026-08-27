@@ -16,7 +16,7 @@ Pattern "cây cầu khứ hồi" tận dụng cả hai:
 
 > **Signal** (state UI) → `toObservable` → **RxJS operators** (debounce, switchMap...) → `toSignal` → **Signal** (template đọc)
 
-Demo search phía trên đi đúng vòng này: gõ nhanh bao nhiêu thì "API" cũng chỉ được gọi sau nhịp gõ cuối 300ms, term không đổi thì không gọi lại, và request cũ đang bay bị `switchMap` hủy.
+Demo search phía trên đi đúng vòng này: gõ nhanh bao nhiêu thì "API" cũng chỉ được gọi 300ms sau nhịp gõ cuối, term không đổi thì không gọi lại, và request cũ đang bay bị `switchMap` hủy.
 
 ---
 

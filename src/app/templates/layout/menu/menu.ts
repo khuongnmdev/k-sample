@@ -5,6 +5,7 @@ import {MenuGroup, MenuItem, MenuLevel} from '@models/menu-item';
 import {DEFAULT_MENU_LIST} from '@mock-data/menu-list';
 import {FormsModule} from '@angular/forms';
 import {CommonService} from '@services/common.service';
+import {LanguageService} from '@services/language.service';
 
 const GROUP_TITLES: Record<MenuGroup, string> = {
   basic: 'Basic',
@@ -28,6 +29,7 @@ const LEVEL_TOOLTIPS: Record<MenuLevel, string> = {
 })
 export class Menu {
   protected readonly commonService = inject(CommonService);
+  protected readonly languageService = inject(LanguageService);
   protected readonly menuList = signal<MenuItem[]>(DEFAULT_MENU_LIST);
 
   // Insert a topic block label (Basic / Signal / RxJS / Summary) at the FIRST item of each group

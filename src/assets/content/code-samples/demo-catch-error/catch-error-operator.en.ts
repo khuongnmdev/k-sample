@@ -15,54 +15,54 @@ export class ExampleCatchErrorComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    console.log('Bắt đầu quy trình xử lý lỗi với CatchError...');
+    console.log('Starting the error-handling flow with CatchError...');
 
     this.userService.isLoggedIn$
       .pipe(
         switchMap((isLoggedIn) => {
           if (!isLoggedIn) {
-            console.log('1. User chưa đăng nhập.');
+            console.log('1. User is not logged in.');
             return EMPTY;
           }
 
-          // --- CÁCH THỨ NHẤT: Bắt lỗi ở từng Observable con ---
-          // Việc pipe catchError ngay bên trong switchMap giúp cô lập lỗi.
-          // Nếu API Profile lỗi, cả luồng chính vẫn không chết.
+          // --- APPROACH ONE: Catch errors on each inner Observable ---
+          // Piping catchError right inside switchMap isolates the error.
+          // If the Profile API fails, the main stream still stays alive.
           return this.userService.userProfile$.pipe(
             catchError((err) => {
-              console.error('❌ Lỗi xảy ra khi lấy Profile:', err);
-              // Trả về một giá trị fallback (null) để filter phía sau chặn lại an toàn
+              console.error('❌ Error while fetching Profile:', err);
+              // Return a fallback value (null) so the filter below safely blocks it
               return of(null);
             }),
           );
         }),
         filter((profile) => !!profile),
         switchMap((profile) => {
-          console.log('2. Đã có Profile, đang gọi API lấy sản phẩm...');
+          console.log('2. Got Profile, calling the products API...');
 
-          // Tiếp tục bắt lỗi riêng cho API sản phẩm
+          // Keep catching errors separately for the products API
           return this.productService.getProductByUserId(profile!.code).pipe(
             catchError((err) => {
-              console.error('❌ Lỗi xảy ra khi lấy Sản phẩm:', err);
-              // Nếu lỗi, trả về mảng rỗng để UI vẫn hiển thị được (trạng thái no-data)
+              console.error('❌ Error while fetching Products:', err);
+              // On error, return an empty array so the UI can still render (no-data state)
               return of([]);
             }),
           );
         }),
         catchError((globalErr) => {
-          console.error('🚨 Lỗi Global (ảnh hưởng cả luồng):', globalErr);
+          console.error('🚨 Global error (affects the whole stream):', globalErr);
           return of([]);
         }),
-        // Tự hủy subscription khi component destroy - chặn Memory Leak
+        // Auto-cancel the subscription on component destroy - prevents Memory Leak
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (products) => {
-          console.log(`3. Kết quả cuối cùng:`, products);
+          console.log(`3. Final result:`, products);
         },
         error: (err) => {
-          // Khối này sẽ KHÔNG bao giờ chạy nếu các catchError bên trên đã return "of(...)"
-          console.log('Lỗi này lọt xuống tận Subscribe:', err);
+          // This block will NEVER run if the catchError operators above return "of(...)"
+          console.log('This error fell all the way down to Subscribe:', err);
         },
       });
   }

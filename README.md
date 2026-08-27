@@ -6,6 +6,7 @@ Each page covers one topic: a clickable live demo, matching code samples, and an
 - **Angular 21** - standalone components, OnPush, running **Zoneless** (switchable to Zone.js for the CD demo)
 - **SSR + Prerender** for all routes
 - Teaching content is written in Vietnamese, short sentences optimized for presenting
+- **Bilingual content**: the "English content" toggle in the menu switches markdown articles and code samples to their `.en` siblings (`explain-x.en.md`, `sample.en.ts`); missing translations fall back to the original file
 
 ---
 
@@ -139,6 +140,7 @@ The Demo Change Detection page auto-detects and displays the current mode.
 ## ✍️ Content conventions
 
 - **Displayed content** (markdown, card notes, comments inside code samples): Vietnamese, short sentences, one sentence per line - these are presentation slides, not docs.
+- **English versions**: every markdown article and code sample has an `.en` sibling. When you edit content, update both files (or delete the `.en` file - the app falls back to the original until it is re-translated).
 - **Infrastructure code** (components, services, config): English comments.
 - Code samples must **mirror the live demo** on their page: same variable names, same buttons - learners map demo to code instantly.
 - Demos use modern Angular idioms: standalone, OnPush, signals, `inject()`, `takeUntilDestroyed`.

@@ -6,6 +6,13 @@
       <span class="switch-track" aria-hidden="true"></span>
       <span class="switch-label">Dark mode</span>
     </label>
+    <label class="switch">
+      <input class="switch-input" type="checkbox"
+             [ngModel]="languageService.language() === 'en'"
+             (ngModelChange)="languageService.toggleLanguage()"/>
+      <span class="switch-track" aria-hidden="true"></span>
+      <span class="switch-label">English content</span>
+    </label>
   </div>
   @if (menuList()) {
     <ul class="menu-list">
